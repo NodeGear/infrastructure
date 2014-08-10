@@ -1,0 +1,8 @@
+---
+
+- name: Installs Backend
+  hosts: backend
+  user: root
+
+  roles:
+    - backend

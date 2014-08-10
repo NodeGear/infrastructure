@@ -1,0 +1,36 @@
+---
+
+###
+# Client stuff
+
+- name: Run Nodegear MySQL
+  docker: image="tutum/mysql" ports="{{ admin_mysql_ip }}:3306:3306" volumes="/home/ng_mysql:/var/lib/mysql" name="ng_mysql_db" state=running
+
+- name: Run Nodegear Client mongodb
+  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_client_mongodb:/var/lib/mongodb" name="ng_client_mongodb" env="REPL_SET=ng_clients" ports="{{ admin_mongodb_ip }}:27017:27017" hostname="ng_client_mongodb" state=running
+
+###
+# ng_redis
+
+- name: Run NodeGear Redis
+  docker: image="castawaylabs/redis-docker" env="REDIS_PASSWORD={{ redis_key }}" ports="{{ redis_ip }}:6379:6379" name="ng_redis" volumes="/home/ng_redis:/var/lib/redis" state=running
+
+###
+# ng_mongodb
+
+- name: Run NodeGear Mongodb
+  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_mongodb:/var/lib/mongodb" env="REPL_SET=ng" ports="{{ mongo_ip }}:27017:27017" name="ng_mongodb" hostname="ng_mongodb" state=running
+
+###
+# MMS Monitoring
+
+- name: Run MMS Docker
+  docker: image="castawaylabs/mms-docker" name="mms" env="MMS_KEY={{ mms_key }}" links="ng_mongodb:ng_mongodb,ng_client_mongodb:sp2_nodegear_clients" state=running
+  when: mms_key != False
+
+###
+# MMS Backup
+
+- name: Run MMS Backup Docker
+  docker: image="castawaylabs/mms-backup-docker" name="mms_backup" env="MMS_KEY={{ mms_key }}" links="ng_mongodb:ng_mongodb,ng_client_mongodb:sp2_nodegear_clients" state=running
+  when: mms_key != False

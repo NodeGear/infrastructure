@@ -1,0 +1,48 @@
+{
+	"redis_port": 6379,
+	"redis_host": "{{ redis_ip }}",
+	"redis_key": "{{ redis_key }}",
+	"newrelic_key": "{{ newrelic_key }}",
+	"bugsnag_key": "{{ bugsnag_key }}",
+	"stripe": {
+		"pub": "{{ stripe_pub }}",
+		"secret": "{{ stripe_secret }}"
+	},
+	"smtp": {
+		"user": "{{ smtp_user }}",
+		"pass": "{{ smtp_pass }}"
+	},
+	"db": "mongodb://{{ mongodb_auth }}@{{ mongo_ip }}/ng",
+	"networkDb": "mongodb://{{ mongodb_auth_network }}@{{ mongo_ip }}/networkAnalyser",
+	"db_options": {
+		"auto_reconnect": true,
+		"native_parser": true,
+		"server": {
+			"auto_reconnect": true
+		}
+	},
+	"networkDb_options": {
+		"auto_reconnect": true,
+		"native_parser": true,
+		"server": {
+			"auto_reconnect": true
+		}
+	},
+	"port": 80,
+	"cdn": {
+		"enabled": false,
+		"url": ""
+	},
+	"admin_mysql": {
+		"host": "{{ admin_mysql_ip }}",
+		"ip": "{{ admin_mysql_ip }}",
+		"user": "{{ admin_mysql_user }}",
+		"password": "{{ admin_mysql_pass }}"
+	},
+	"admin_mongodb": {
+		"host": "{{ admin_mongodb_ip }}",
+		"ip": "{{ admin_mongodb_ip }}",
+		"user": "{{ admin_mongodb_user }}",
+		"pass": "{{ admin_mongodb_pass }}"
+	}
+}

@@ -1,0 +1,33 @@
+{
+	"redis_port": 6379,
+	"redis_host": "{{ redis_ip }}",
+	"redis_key": "{{ redis_key }}",
+	"bugsnag_key": "{{ bugsnag_key }}",
+	"smtp": {
+		"user": "{{ smtp_user }}",
+		"pass": "{{ smtp_pass }}"
+	},
+	"db": "mongodb://{{ mongodb_auth }}@{{ mongo_ip }}/nodegear",
+	"networkDb": "mongodb://{{ mongodb_auth_network }}@{{ mongo_ip }}/networkAnalyser",
+	"db_options": {
+		"auto_reconnect": true,
+		"native_parser": true,
+		"server": {
+			"auto_reconnect": true
+		}
+	},
+	"networkDb_options": {
+		"auto_reconnect": true,
+		"native_parser": true,
+		"server": {
+			"auto_reconnect": true
+		}
+	},
+	"server": {
+		"id": "{{ server_id }}",
+		"name": "{{ server_name }}",
+		"price": {{ server_price }},
+		"address": "{{ server_ip }}",
+		"app_memory": {{ server_memory }}
+	}
+}

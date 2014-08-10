@@ -1,8 +1,8 @@
 ---
 
-- name: Installs NodeGear Frontend
-  hosts: all
+- name: Installs Frontend
+  hosts: frontend
   user: root
 
-  tasks:
-    - include: tasks/docker.yml
+  roles:
+    - frontend

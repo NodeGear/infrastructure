@@ -1,0 +1,8 @@
+---
+
+- name: Installs Services
+  hosts: services
+  user: root
+
+  roles:
+    - services

@@ -1,0 +1,29 @@
+---
+
+- name: Install nginx
+  apt: name=nginx state=latest
+
+- name: install template
+  template: src=nginx_ssl.j2 dest="/etc/nginx/conf.d/ng_frontend.conf"
+  when: is_ssl == True
+
+- name: Install nodegear.io.crt
+  copy: src=nodegear.io.crt dest=/etc/ssl/private/nodegear.crt
+  when: is_ssl == True
+
+- name: Install nodegear.io.key
+  copy: src=nodegear.io.key dest=/etc/ssl/private/nodegear.key
+  when: is_ssl == True
+
+- name: install nginx frontend template
+  template: src=nginx.j2 dest="/etc/nginx/conf.d/ng_frontend.conf"
+  when: is_ssl == False
+
+- name: Remove default
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: Test nginx Configuration
+  command: nginx -t
+
+- name: Reload nginx service
+  service: name=nginx state=reloaded

@@ -1,0 +1,16 @@
+---
+
+- name: Installs Docker and Firewall
+  hosts: all
+  user: root
+
+  tasks:
+    - include: tasks/docker.yml
+    - include: tasks/firewall.yml
+
+    - name: ng_key
+      copy: src=files/ng_key dest=/root/ng_key
+    - name: ng_key.pub
+      copy: src=files/ng_key.pub dest=/root/ng_key.pub
+    - name: Permissions for ng_key
+      file: mode=0600 path=/root/ng_key
