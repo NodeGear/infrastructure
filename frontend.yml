@@ -1,0 +1,8 @@
+---
+
+- name: Installs NodeGear Frontend
+  hosts: all
+  user: root
+
+  tasks:
+    - include: tasks/docker.yml
