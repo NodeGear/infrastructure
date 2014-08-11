@@ -7,7 +7,7 @@
   docker: image="tutum/mysql" ports="{{ admin_mysql_ip }}:3306:3306" volumes="/home/ng_mysql:/var/lib/mysql" name="ng_mysql_db" state=running
 
 - name: Run Nodegear Client mongodb
-  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_client_mongodb:/var/lib/mongodb" name="ng_client_mongodb" env="REPL_SET=ng_clients" ports="{{ admin_mongodb_ip }}:27017:27017" hostname="ng_client_mongodb" state=running
+  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_client_mongodb:/var/lib/mongodb" name="ng_client_mongodb" env="REPL_SET=ng_clients" ports="{{ mongo_ip }}:27017:27017" hostname="ng_client_mongodb" state=running
 
 ###
 # ng_redis
@@ -18,8 +18,75 @@
 ###
 # ng_mongodb
 
+# Setup replica set when ng_mongodb folder is empty
+- stat: path=/home/ng_mongodb
+  register: ng_mongodb_folder_is_setup
+
+- name: "set up mongodb replica"
+  docker: image="castawaylabs/mongodb-docker" volumes=/home/ng_monodb:/var/lib/mongodb,/root/mongodb_config.temp.js:/tmp/setup.js env='REPL_SET=ng' command="/sbin/mongodb-docker setupReplicaSet admin" name='ng_mongodb_rs' hostname="ng_mongodb" state=running
+  when: ng_mongodb_folder_is_setup.stat.exists == False
+
+- name: "Wait until docker stops"
+  command: docker wait ng_mongodb_rs
+  when: ng_mongodb_folder_is_setup.stat.exists == False
+
+- name: "remove replica set container"
+  docker: image="castawaylabs/mongodb-docker" name=ng_mongodb_rs state=absent
+  when: ng_mongodb_folder_is_setup.stat.exists == False
+
+# Setup mongodb users
+- stat: path=/home/ng_mongodb_is_setup
+  register: ng_mongodb_is_setup
+
+- name: admin user
+  include: setup_mongodb.yml
+  when: ng_mongodb_is_setup.stat.exists == False
+  vars:
+    db: "admin"
+    container: "ng_mongodb"
+    hostname: "ng_mongodb"
+    volume: "/home/ng_mongodb:/var/lib/mongodb"
+    env: "REPL_SET=ng"
+    user: "{{ mongodb_admin_user }}"
+    pass: "{{ mongodb_admin_pass }}"
+    roles: "{{ mongodb_admin_permissions }}"
+
+- name: ng user
+  include: setup_mongodb.yml
+  when: ng_mongodb_is_setup.stat.exists == False
+  vars:
+    db: "ng"
+    container: "ng_mongodb"
+    hostname: "ng_mongodb"
+    volume: "/home/ng_mongodb:/var/lib/mongodb"
+    env: "REPL_SET=ng"
+    user: "{{ mongodb_auth_user }}"
+    pass: "{{ mongodb_auth_pass }}"
+    roles: "{{ mongodb_auth_permissions }}"
+
+- name: ngNetwork user
+  include: setup_mongodb.yml
+  when: ng_mongodb_is_setup.stat.exists == False
+  vars:
+    db: "ngNetwork"
+    container: "ng_mongodb"
+    hostname: "ng_mongodb"
+    volume: "/home/ng_mongodb:/var/lib/mongodb"
+    env: "REPL_SET=ng"
+    user: "{{ mongodb_auth_network_user }}"
+    pass: "{{ mongodb_auth_network_pass }}"
+    roles: "{{ mongodb_auth_network_permissions }}"
+
+- name: "ng_mongodb is not set up, stop ng_mongodb and remove the container"
+  docker: image="castawaylabs/mongodb-docker" name="ng_mongodb" state=absent
+  when: ng_mongodb_is_setup.stat.exists == False
+
+- name: "touch a setup file"
+  file: path=/home/ng_mongodb_is_setup state=touch
+  when: ng_mongodb_is_setup.stat.exists == False
+
 - name: Run NodeGear Mongodb
-  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_mongodb:/var/lib/mongodb" env="REPL_SET=ng" ports="{{ mongo_ip }}:27017:27017" name="ng_mongodb" hostname="ng_mongodb" state=running
+  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_mongodb:/var/lib/mongodb" env="REPL_SET=ng" ports="{{ mongo_ip }}:27017:27017" hostname="ng_mongodb" name="ng_mongodb" hostname="ng_mongodb" state=running
 
 ###
 # MMS Monitoring

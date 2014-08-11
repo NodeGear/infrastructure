@@ -1,0 +1,13 @@
+---
+
+- name: "mongodb is not set up, stop ng_mongodb and remove the container"
+  docker: image="castawaylabs/mongodb-docker" name={{ container }} state=absent
+
+- name: "Upload temp file"
+  template: src=mongodb_config.js.j2 dest=/root/mongodb_config.temp.js
+
+- name: "mongodb is not set up, set up user"
+  docker: image="castawaylabs/mongodb-docker" volumes={{ volume }},/root/mongodb_config.temp.js:/tmp/setup.js env={{ env }} hostname={{ hostname }} command="/sbin/mongodb-docker setup {{ db }}" name={{container}} state=running
+
+- name: "Wait until docker stops"
+  command: docker wait {{ container }}
