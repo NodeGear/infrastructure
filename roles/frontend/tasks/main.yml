@@ -1,7 +1,7 @@
 ---
 
 - name: Update NG-Frontend
-  git: repo=ssh://git@lab.castawaylabs.com/nodegear/ng-frontend.git dest=/home/ng-frontend key_file=/root/ng_key accept_hostkey=yes
+  git: repo=ssh://git@lab.castawaylabs.com/nodegear/ng-frontend.git dest=/home/ng-frontend key_file=/root/ng_key accept_hostkey=yes update=yes force=yes
 
 - name: Install credentials
   template: src=ng_frontend.json dest=/home/ng-frontend/lib/credentials.json
