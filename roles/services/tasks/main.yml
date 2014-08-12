@@ -103,7 +103,7 @@
 
 - name: admin user
   include: setup_mongodb.yml
-  when: ng_mongodb_is_setup.stat.exists == False
+  when: ng_client_mongodb_is_setup.stat.exists == False
   vars:
     db: "admin"
     container: "ng_client_mongodb"
@@ -116,7 +116,7 @@
 
 - name: "ng_client_mongodb is not set up, stop ng_client_mongodb and remove the container"
   docker: image="castawaylabs/mongodb-docker" name="ng_client_mongodb" state=absent
-  when: ng_mongodb_is_setup.stat.exists == False
+  when: ng_client_mongodb_is_setup.stat.exists == False
 
 - name: "touch a setup file"
   file: path=/home/ng_client_mongodb_is_setup state=touch
