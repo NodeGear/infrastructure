@@ -7,7 +7,6 @@
   tasks:
     - apt: name=apt-transport-https
     - include: tasks/docker.yml
-    - include: tasks/firewall.yml
 
     - name: ng_key
       copy: src=files/ng_key dest=/root/ng_key
@@ -15,3 +14,5 @@
       copy: src=files/ng_key.pub dest=/root/ng_key.pub
     - name: Permissions for ng_key
       file: mode=0600 path=/root/ng_key
+
+    - include: tasks/firewall.yml
