@@ -2,6 +2,8 @@
 	"redis_port": 6379,
 	"redis_host": "{{ redis_ip }}",
 	"redis_key": "{{ redis_key }}",
+	"use_analytics": {{ use_analytics }},
+	"is_ssl": {{ is_ssl }},
 	"newrelic_key": "{{ newrelic_key }}",
 	"bugsnag_key": "{{ bugsnag_key }}",
 	"stripe": {
