@@ -86,7 +86,7 @@
   docker: image="tutum/mysql" ports="{{ admin_mysql_ip }}:3306:3306" volumes="/home/ng_mysql:/var/lib/mysql" name="ng_mysql_db" state=running
 
 - name: Run Nodegear Client mongodb
-  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_client_mongodb:/var/lib/mongodb" name="ng_client_mongodb" env="REPL_SET=ng_clients" ports="{{ mongo_ip }}:27017:27017" hostname="ng_client_mongodb" state=running
+  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_client_mongodb:/var/lib/mongodb" name="ng_client_mongodb" env="REPL_SET=ng_clients" ports="{{ admin_mongodb_ip }}:27017:27017" hostname="ng_client_mongodb" state=running
 
 ###
 # MMS Monitoring
