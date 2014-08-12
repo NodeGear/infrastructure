@@ -5,6 +5,7 @@
   user: root
 
   tasks:
+    - apt: name=apt-transport-https
     - include: tasks/docker.yml
     - include: tasks/firewall.yml
 
