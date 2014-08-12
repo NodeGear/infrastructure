@@ -14,7 +14,7 @@
   register: ng_mongodb_folder_is_setup
 
 - name: "set up mongodb replica"
-  docker: image="castawaylabs/mongodb-docker" volumes=/home/ng_monodb:/var/lib/mongodb,/root/mongodb_config.temp.js:/tmp/setup.js env='REPL_SET=ng' command="/sbin/mongodb-docker setupReplicaSet admin" name='ng_mongodb_rs' hostname="ng_mongodb" state=running
+  docker: image="castawaylabs/mongodb-docker" volumes=/home/ng_mongodb:/var/lib/mongodb,/root/mongodb_config.temp.js:/tmp/setup.js env='REPL_SET=ng' command="/sbin/mongodb-docker setupReplicaSet admin" name='ng_mongodb_rs' hostname="ng_mongodb" state=running
   when: ng_mongodb_folder_is_setup.stat.exists == False
 
 - name: "Wait until docker stops"
@@ -77,7 +77,7 @@
   when: ng_mongodb_is_setup.stat.exists == False
 
 - name: Run NodeGear Mongodb
-  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_mongodb:/var/lib/mongodb" env="REPL_SET=ng" ports="{{ mongo_ip }}:27017:27017" hostname="ng_mongodb" name="ng_mongodb" hostname="ng_mongodb" state=running
+  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_mongodb:/var/lib/mongodb" env="REPL_SET=ng" ports="{{ mongo_ip }}:27017:27017" hostname="ng_mongodb" name="ng_mongodb" state=running
 
 
 ###
