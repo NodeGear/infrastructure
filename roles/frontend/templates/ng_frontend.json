@@ -2,8 +2,16 @@
 	"redis_port": 6379,
 	"redis_host": "{{ redis_ip }}",
 	"redis_key": "{{ redis_key }}",
-	"use_analytics": {{ use_analytics }},
-	"is_ssl": {{ is_ssl }},
+	{% if use_analytics == True %}
+	"use_analytics": true,
+	{% else %}
+	"use_analytics": false,
+	{% endif %}
+	{% if is_ssl == True %}
+	"is_ssl": true,
+	{% else %}
+	"is_ssl": false,
+	{% endif %}
 	"newrelic_key": "{{ newrelic_key }}",
 	"bugsnag_key": "{{ bugsnag_key }}",
 	"stripe": {
