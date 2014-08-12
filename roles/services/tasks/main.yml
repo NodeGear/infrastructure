@@ -9,25 +9,24 @@
 ###
 # ng_mongodb
 
-# Setup replica set when ng_mongodb folder is empty
-- stat: path=/home/ng_mongodb
-  register: ng_mongodb_folder_is_setup
+- stat: path=/home/ng_mongodb_is_setup
+  register: ng_mongodb_is_setup
+
+# Setup replica set
 
 - name: "set up mongodb replica"
-  docker: image="castawaylabs/mongodb-docker" volumes=/home/ng_mongodb:/var/lib/mongodb,/root/mongodb_config.temp.js:/tmp/setup.js env='REPL_SET=ng' command="/sbin/mongodb-docker setupReplicaSet admin" name='ng_mongodb_rs' hostname="ng_mongodb" state=running
-  when: ng_mongodb_folder_is_setup.stat.exists == False
+  docker: image="castawaylabs/mongodb-docker" volumes=/home/ng_mongodb:/var/lib/mongodb env='REPL_SET=ng' command="/sbin/mongodb-docker setupReplicaSet admin" name='ng_mongodb_rs' hostname="ng_mongodb" state=running
+  when: ng_mongodb_is_setup.stat.exists == False
 
 - name: "Wait until docker stops"
   command: docker wait ng_mongodb_rs
-  when: ng_mongodb_folder_is_setup.stat.exists == False
+  when: ng_mongodb_is_setup.stat.exists == False
 
 - name: "remove replica set container"
   docker: image="castawaylabs/mongodb-docker" name=ng_mongodb_rs state=absent
-  when: ng_mongodb_folder_is_setup.stat.exists == False
+  when: ng_mongodb_is_setup.stat.exists == False
 
 # Setup mongodb users
-- stat: path=/home/ng_mongodb_is_setup
-  register: ng_mongodb_is_setup
 
 - name: admin user
   include: setup_mongodb.yml
