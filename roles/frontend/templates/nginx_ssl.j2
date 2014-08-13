@@ -54,6 +54,8 @@ server {
 		proxy_set_header Upgrade $http_upgrade;
 		proxy_set_header Connection "upgrade";
 
+		proxy_pass_header Server;
+		
 		proxy_pass http://ng_frontend;
 		
 		proxy_redirect off;
