@@ -1,7 +1,13 @@
 ---
 
+- name: Add NGINX APT key
+  apt_key: url=http://nginx.org/keys/nginx_signing.key state=present
+
+- name: Add APT file
+  template: src=nginx-apt.j2 dest=/etc/apt/sources.list.d/nginx.list
+
 - name: Install nginx
-  apt: name=nginx state=latest
+  apt: name=nginx state=latest update_cache=yes
 
 - name: install template
   template: src=nginx_ssl.j2 dest="/etc/nginx/conf.d/ng_frontend.conf"
