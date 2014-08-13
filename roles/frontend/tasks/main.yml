@@ -6,8 +6,11 @@
 - name: Install credentials
   template: src=ng_frontend.json dest=/home/ng-frontend/lib/credentials.json
 
+- name: Restarted NG-Frontend
+  docker: image="castawaylabs/node-docker" name="ng_frontend" state=restarted
+
 - name: Run NG-Frontend
-  docker: image="castawaylabs/node-docker" volumes="/home/ng-frontend:/srv/app,/root/ng_key:/root/.ssh/id_rsa,/root/ng_key.pub:/root/.ssh/id_rsa.pub" ports="127.0.0.1:9000:80" name="ng_frontend" env="PORT=80,NODE_ENV=production" state=restarted
+  docker: image="castawaylabs/node-docker" volumes="/home/ng-frontend:/srv/app,/root/ng_key:/root/.ssh/id_rsa,/root/ng_key.pub:/root/.ssh/id_rsa.pub" ports="127.0.0.1:9000:80" name="ng_frontend" env="PORT=80,NODE_ENV=production" state=running
 
 - name: Install NGINX
   include: nginx.yml
