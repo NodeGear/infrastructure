@@ -4,7 +4,7 @@
   git: repo=ssh://git@lab.castawaylabs.com/nodegear/ng-backend.git dest=/home/ng-backend key_file=/root/ng_key accept_hostkey=yes
 
 - name: Install credentials
-  template: src=templates/ng_backend.json dest=/home/ng-backend/lib/credentials.json
+  template: src=ng_backend.json dest=/home/ng-backend/lib/credentials.json
 
 # Effectively a file proxy.. The socket is mounted as volume inside the docker. It runs well, so whatever.
 
