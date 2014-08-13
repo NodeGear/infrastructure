@@ -12,4 +12,4 @@
   docker: image="castawaylabs/node-docker" name="ng_backend" state=restarted
 
 - name: Run NG-Backend
-  docker: image="castawaylabs/node-docker" volumes="/home/ng-backend:/srv/app,/root/ng_key:/root/.ssh/id_rsa,/root/ng_key.pub:/root/.ssh/id_rsa.pub,/root/ng-backend/lib/scripts:/ng-scripts,/var/run/docker.sock:/var/run/docker.sock,/home/ng_users:/home" name="ng_backend" env="NODE_ENV=production" state=running
+  docker: image="castawaylabs/node-docker" volumes="/home/ng-backend:/srv/app,/root/ng_key:/root/.ssh/id_rsa,/root/ng_key.pub:/root/.ssh/id_rsa.pub,/root/ng-backend/lib/scripts:/ng-scripts,/var/run/docker.sock:/var/run/docker.sock,/home/ng_users:/home,/proc:/outside_proc" name="ng_backend" env="NODE_ENV=production" state=running
