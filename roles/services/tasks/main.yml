@@ -125,8 +125,10 @@
 - name: Run NodeGear Client Mongodb
   docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_client_mongodb:/var/lib/mongodb" env="REPL_SET=ng_clients" ports="{{ admin_mongodb_ip }}:27017:27017" hostname="ng_client_mongodb" name="ng_client_mongodb" state=running
 
+# Setup MySQL
+
 - name: Run Nodegear MySQL
-  docker: image="tutum/mysql" ports="{{ admin_mysql_ip }}:3306:3306" volumes="/home/ng_mysql:/var/lib/mysql" name="ng_mysql_db" state=running
+  docker: image="tutum/mysql" ports="{{ admin_mysql_ip }}:3306:3306" volumes="/home/ng_mysql:/var/lib/mysql" env="MYSQL_PASS=egaem9uhaebaesh0ahjangeepee6CheeX4feeYea" name="ng_mysql_db" state=running
 
 ###
 # MMS Monitoring
