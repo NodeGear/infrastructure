@@ -2,7 +2,11 @@
 
 - name: Update ng-backend
   git: repo=ssh://git@lab.castawaylabs.com/nodegear/ng-backend.git dest=/home/ng-backend key_file=/root/ng_key accept_hostkey=yes
+
 - name: Install credentials
   template: src=templates/ng_backend.json dest=/home/ng-backend/lib/credentials.json
+
+# Effectively a file proxy.. The socket is mounted as volume inside the docker. It runs well, so whatever.
+
 - name: Run NG-Backend
-  docker: image="castawaylabs/node-docker" volumes="/home/ng-backend:/srv/app,/root/ng_key:/root/.ssh/id_rsa,/root/ng_key.pub:/root/.ssh/id_rsa.pub,/root/ng-backend/lib/scripts:/ng-scripts,/var/run/docker.sock:/var/run/docker.sock" name="ng_backend" env="NODE_ENV=production" state=running
+  docker: image="castawaylabs/node-docker" volumes="/home/ng-backend:/srv/app,/root/ng_key:/root/.ssh/id_rsa,/root/ng_key.pub:/root/.ssh/id_rsa.pub,/root/ng-backend/lib/scripts:/ng-scripts,/var/run/docker.sock:/var/run/docker.sock,/home/ng_users:/home" name="ng_backend" env="NODE_ENV=production" state=restarted
