@@ -78,7 +78,6 @@
 - name: Run NodeGear Mongodb
   docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_mongodb:/var/lib/mongodb" env="REPL_SET=ng" ports="{{ mongo_ip }}:27017:27017" hostname="ng_mongodb" name="ng_mongodb" state=running
 
-
 ###
 # Client stuff
 
@@ -130,17 +129,26 @@
 - name: Run Nodegear MySQL
   docker: image="tutum/mysql" ports="{{ admin_mysql_ip }}:3306:3306" volumes="/home/ng_mysql:/var/lib/mysql" env="MYSQL_PASS=egaem9uhaebaesh0ahjangeepee6CheeX4feeYea" name="ng_mysql_db" state=running
 
+# MMS Stuff
+
+# Delete happens because sometimes ng_mongodb is removed, and then the link isn't reestablished
+
+- name: Delete MMS Docker
+  docker: image="castawaylabs/mms-docker" name="mms" state=absent
+
+- name: Run MMS Backup Docker
+  docker: image="castawaylabs/mms-backup-docker" name="mms_backup" state=absent
+
 ###
 # MMS Monitoring
 
 - name: Run MMS Docker
-  docker: image="castawaylabs/mms-docker" name="mms" env="MMS_KEY={{ mms_key }}" links="ng_mongodb:ng_mongodb,ng_client_mongodb:ng_client_mongodb" state=running
+  docker: image="castawaylabs/mms-docker" name=mms env="MMS_KEY={{ mms_key }}" links="ng_mongodb:ng_mongodb,ng_client_mongodb:ng_client_mongodb" state=running
   when: mms_key != False
 
 ###
 # MMS Backup
 
 - name: Run MMS Backup Docker
-  docker: image="castawaylabs/mms-backup-docker" name="mms_backup" env="MMS_KEY={{ mms_key }}" links="ng_mongodb:ng_mongodb,ng_client_mongodb:ng_client_mongodb" state=running
+  docker: image="castawaylabs/mms-backup-docker" name=mms_backup env="MMS_KEY={{ mms_key }}" links="ng_mongodb:ng_mongodb,ng_client_mongodb:ng_client_mongodb" state=running
   when: mms_key != False
-
