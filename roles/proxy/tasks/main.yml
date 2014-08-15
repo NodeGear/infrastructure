@@ -1,7 +1,7 @@
 ---
 
 - name: Update proxy
-  git: repo=git://github.com/castawaylabs/dproxy.js.git dest=/home/proxy
+  git: repo=git://github.com/castawaylabs/dproxy.js.git dest=/home/proxy accept_hostkey=True
 
 - name: Install credentials
   template: src=credentials.js dest=/home/proxy/lib/credentials.js
