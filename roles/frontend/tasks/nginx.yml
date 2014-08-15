@@ -9,9 +9,16 @@
 - name: Install nginx
   apt: name=nginx state=latest update_cache=yes
 
+- name: Remove default.conf from nginx
+  file: path=/etc/nginx/conf.d/default.conf state=absent
+
+- name: Remove default ssl .conf from nginx
+  file: path=/etc/nginx/conf.d/example_ssl.conf state=absent
+
 - name: install template
   template: src=nginx_ssl.j2 dest="/etc/nginx/conf.d/ng_frontend.conf"
   when: is_ssl == True
+
 
 - name: Install nodegear.io.crt
   copy: src=nodegear.io.crt dest=/etc/ssl/private/nodegear.crt

@@ -1,0 +1,19 @@
+---
+
+- name: Update proxy
+  git: repo=git://github.com/castawaylabs/dproxy.js.git dest=/home/proxy
+
+- name: Install credentials
+  template: src=credentials.js dest=/home/proxy/lib/credentials.js
+
+- name: Install SSL Certificate
+  file: src=ngapp.io.crt dest=/home/proxy/server.crt
+
+- name: Install SSL Key
+  file: src=ngapp.io.key dest=/home/proxy/server.key
+
+- name: Restarted proxy
+  docker: image="castawaylabs/node-docker" name="ng_proxy" state=restarted
+
+- name: Run NG-Backend
+  docker: image="castawaylabs/node-docker volumes="/home/ng-backend:/srv/app" name="ng_proxy" env="NODE_ENV=production" state=running

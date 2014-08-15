@@ -1,0 +1,8 @@
+---
+
+- name: Installs Services
+  hosts: proxy
+  user: root
+
+  roles:
+    - proxy
