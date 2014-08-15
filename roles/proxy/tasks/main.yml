@@ -16,4 +16,4 @@
   docker: image="castawaylabs/node-docker" name="ng_proxy" state=restarted
 
 - name: Run NG-Backend
-  docker: image="castawaylabs/node-docker" volumes="/home/proxy:/srv/app" name="ng_proxy" env="NODE_ENV=production" state=running
+  docker: image="castawaylabs/node-docker" volumes="/home/proxy:/srv/app" name="ng_proxy" env="NODE_ENV=production" ports="80:80,443:443" state=running
