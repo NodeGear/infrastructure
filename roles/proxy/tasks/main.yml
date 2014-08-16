@@ -12,8 +12,11 @@
 - name: Install SSL Key
   copy: src=ngapp.io.key dest=/home/proxy/server.key
 
-- name: Restarted proxy
-  docker: image="castawaylabs/node-docker" name="ng_proxy" state=restarted
+- name: Install SSL CA Chain
+  copy: src=ngapp.io.key dest=/home/proxy/server.ca
 
-- name: Run NG-Backend
+- name: Remove proxy
+  docker: image="castawaylabs/node-docker" name="ng_proxy" state=absent
+
+- name: Run NG-proxy
   docker: image="castawaylabs/node-docker" volumes="/home/proxy:/srv/app" name="ng_proxy" env="NODE_ENV=production" ports="80:80,443:443" net="host" state=running
