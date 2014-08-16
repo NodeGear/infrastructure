@@ -2,7 +2,9 @@
 
 - name: Installs Docker and Firewall
   hosts: all
-  user: root
+  user: ansible_access
+  sudo: true
+  sudo_user: ansible_access
 
   tasks:
     - apt: name=apt-transport-https
