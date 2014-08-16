@@ -2,16 +2,19 @@
 
 - name: Installs Docker and Firewall
   hosts: all
-  user: ansible_access
-  sudo: true
-  sudo_user: ansible_access
+  user: ansible_connect
+  sudo: yes
+
+  vars_files:
+    - vars/infrastructure.yml
+    - vars/keys.yml
 
   tasks:
     - apt: name=apt-transport-https
     - include: tasks/docker.yml
 
     - name: ng_key
-      copy: src=files/ng_key dest=/root/ng_key
+      copy: content="{{ ng_key }}" dest=/root/ng_key
     - name: ng_key.pub
       copy: src=files/ng_key.pub dest=/root/ng_key.pub
     - name: Permissions for ng_key

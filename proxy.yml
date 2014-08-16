@@ -2,7 +2,12 @@
 
 - name: Installs Services
   hosts: proxy
-  user: root
+  user: ansible_connect
+  sudo: yes
+
+  vars_files:
+    - vars/infrastructure.yml
+    - vars/keys.yml
 
   roles:
     - proxy

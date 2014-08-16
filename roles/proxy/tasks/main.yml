@@ -7,13 +7,13 @@
   template: src=credentials.js dest=/home/proxy/lib/credentials.js
 
 - name: Install SSL Certificate
-  copy: src=ngapp.io.crt dest=/home/proxy/server.crt
+  copy: content="{{ ngapp_io_crt }}" dest=/home/proxy/server.crt
 
 - name: Install SSL Key
-  copy: src=ngapp.io.key dest=/home/proxy/server.key
+  copy: content="{{ ngapp_io_key }}" dest=/home/proxy/server.key
 
 - name: Install SSL CA Chain
-  copy: src=ngapp.io.key dest=/home/proxy/server.ca
+  copy: content="{{ ngapp_io_ca }}" dest=/home/proxy/server.ca
 
 - name: Remove proxy
   docker: image="castawaylabs/node-docker" name="ng_proxy" state=absent

@@ -21,11 +21,11 @@
 
 
 - name: Install nodegear.io.crt
-  copy: src=nodegear.io.crt dest=/etc/ssl/private/nodegear.crt
+  copy: content="{{ nodegear_io_crt }}" dest=/etc/ssl/private/nodegear.crt
   when: is_ssl == True
 
 - name: Install nodegear.io.key
-  copy: src=nodegear.io.key dest=/etc/ssl/private/nodegear.key
+  copy: content="{{ nodegear_io_key }}" dest=/etc/ssl/private/nodegear.key
   when: is_ssl == True
 
 - name: install nginx frontend template
