@@ -76,7 +76,7 @@
   when: ng_mongodb_is_setup.stat.exists == False
 
 - name: Run NodeGear Mongodb
-  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_mongodb:/var/lib/mongodb" env="REPL_SET=ng" ports="{{ mongo_ip }}:27017:27017" hostname="ng_mongodb" name="ng_mongodb" state=running
+  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_mongodb:/var/lib/mongodb" env="REPL_SET=ng" ports="{{ mongo_ip }}:2017:27017" hostname="ng_mongodb" name="ng_mongodb" state=running
 
 ###
 # Client stuff

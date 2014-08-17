@@ -22,8 +22,8 @@
 		"user": "{{ smtp_user }}",
 		"pass": "{{ smtp_pass }}"
 	},
-	"db": "mongodb://{{ mongodb_auth_user }}:{{ mongodb_auth_pass }}@{{ mongo_ip }}/ng",
-	"networkDb": "mongodb://{{ mongodb_auth_network_user }}:{{ mongodb_auth_network_pass }}@{{ mongo_ip }}/ngNetwork",
+	"db": "mongodb://{{ mongodb_auth_user }}:{{ mongodb_auth_pass }}@{{ mongo_ip }}:2017/ng",
+	"networkDb": "mongodb://{{ mongodb_auth_network_user }}:{{ mongodb_auth_network_pass }}@{{ mongo_ip }}:2017/ngNetwork",
 	"db_options": {
 		"auto_reconnect": true,
 		"native_parser": true,

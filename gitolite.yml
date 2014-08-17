@@ -1,8 +1,0 @@
----
-
-- name: Gitolite Server
-  hosts: gitolite
-  user: root
-
-  roles:
-    - gitolite

@@ -14,3 +14,9 @@
 
 - name: PIP Docker-py
   pip: name=docker-py
+
+- name: Get the node-docker image
+  shell: docker pull castawaylabs/node-docker
+
+- name: Get the mongodb image
+  shell: docker pull castawaylabs/mongodb-docker
