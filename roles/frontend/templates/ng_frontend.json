@@ -12,6 +12,8 @@
 	{% else %}
 	"is_ssl": false,
 	{% endif %}
+	"mongolab_endpoint": "{{ mongolab_endpoint }}",
+	"mongolab_sso_salt": "{{  mongolab_sso_salt }}",
 	"newrelic_key": "{{ newrelic_key }}",
 	"bugsnag_key": "{{ bugsnag_key }}",
 	"stripe": {
