@@ -20,4 +20,5 @@
     - name: Permissions for ng_key
       file: mode=0600 path=/root/ng_key
 
+    - include: tasks/newrelic.yml
     - include: tasks/firewall.yml

@@ -1,0 +1,16 @@
+---
+
+- name: Add Newrelic APT key
+  apt_key: url=https://download.newrelic.com/548C16BF.gpg state=present
+
+- name: Add APT file
+  template: src=newrelic-apt.j2 dest=/etc/apt/sources.list.d/newrelic.list
+
+- name: Install newrelic-sysmond
+  apt: name=newrelic-sysmond state=latest update_cache=yes
+
+- name: Configure License Key
+  shell: nrsysmond-config --set license_key={{ newrelic_license_key }}
+
+- name: Start newrelic sysmond
+  service: name=newrelic-sysmond state=started
