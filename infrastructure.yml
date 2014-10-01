@@ -1,7 +1,7 @@
 ---
 
 - name: Installs Docker and Firewall
-  hosts: all
+  hosts: backend
   user: ansible_connect
   sudo: yes
 

@@ -4,18 +4,18 @@
 # ng_redis
 
 - name: Run NodeGear Redis
-  docker: image="castawaylabs/redis-docker" env="REDIS_PASSWORD={{ redis_key }}" ports="{{ redis_ip }}:6379:6379" name="ng_redis" volumes="/mnt/mongodb/ng_redis:/var/lib/redis" state=running
+  docker: image="castawaylabs/redis-docker" env="REDIS_PASSWORD={{ redis_key }}" ports="{{ redis_ip }}:6379:6379" name="ng_redis" volumes="/home/ng_redis:/var/lib/redis" state=running
 
 ###
 # ng_mongodb
 
-- stat: path=/mnt/mongodb/ng_mongodb_is_setup
+- stat: path=/home/ng_mongodb_is_setup
   register: ng_mongodb_is_setup
 
 # Setup replica set
 
 - name: "set up mongodb replica"
-  docker: image="castawaylabs/mongodb-docker" volumes=/mnt/mongodb/ng_mongodb:/var/lib/mongodb env='REPL_SET=ng' command="/sbin/mongodb-docker setupReplicaSet admin" name='ng_mongodb_rs' hostname="ng_mongodb" state=running
+  docker: image="castawaylabs/mongodb-docker" volumes=/home/ng_mongodb:/var/lib/mongodb env='REPL_SET=ng' command="/sbin/mongodb-docker setupReplicaSet admin" name='ng_mongodb_rs' hostname="ng_mongodb" state=running
   when: ng_mongodb_is_setup.stat.exists == False
 
 - name: "Wait until docker stops"
@@ -35,7 +35,7 @@
     db: "admin"
     container: "ng_mongodb"
     hostname: "ng_mongodb"
-    volume: "/mnt/mongodb/ng_mongodb:/var/lib/mongodb"
+    volume: "/home/ng_mongodb:/var/lib/mongodb"
     env: "REPL_SET=ng"
     user: "{{ mongodb_admin_user }}"
     pass: "{{ mongodb_admin_pass }}"
@@ -48,7 +48,7 @@
     db: "ng"
     container: "ng_mongodb"
     hostname: "ng_mongodb"
-    volume: "/mnt/mongodb/ng_mongodb:/var/lib/mongodb"
+    volume: "/home/ng_mongodb:/var/lib/mongodb"
     env: "REPL_SET=ng"
     user: "{{ mongodb_auth_user }}"
     pass: "{{ mongodb_auth_pass }}"
@@ -61,7 +61,7 @@
     db: "ngNetwork"
     container: "ng_mongodb"
     hostname: "ng_mongodb"
-    volume: "/mnt/mongodb/ng_mongodb:/var/lib/mongodb"
+    volume: "/home/ng_mongodb:/var/lib/mongodb"
     env: "REPL_SET=ng"
     user: "{{ mongodb_auth_network_user }}"
     pass: "{{ mongodb_auth_network_pass }}"
@@ -72,22 +72,22 @@
   when: ng_mongodb_is_setup.stat.exists == False
 
 - name: "touch a setup file"
-  file: path=/mnt/mongodb/ng_mongodb_is_setup state=touch
+  file: path=/home/ng_mongodb_is_setup state=touch
   when: ng_mongodb_is_setup.stat.exists == False
 
 - name: Run NodeGear Mongodb
-  docker: image="castawaylabs/mongodb-docker" volumes="/mnt/mongodb/ng_mongodb:/var/lib/mongodb" env="REPL_SET=ng" ports="{{ mongo_ip }}:2017:27017" hostname="ng_mongodb" name="ng_mongodb" state=running
+  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_mongodb:/var/lib/mongodb" env="REPL_SET=ng" ports="{{ mongo_ip }}:2017:27017" hostname="ng_mongodb" name="ng_mongodb" state=running
 
 ###
 # Client stuff
 
 # Mongodb
 
-- stat: path=/mnt/mongodb/ng_client_mongodb_is_setup
+- stat: path=/home/ng_client_mongodb_is_setup
   register: ng_client_mongodb_is_setup
 
 - name: "set up mongodb replica"
-  docker: image="castawaylabs/mongodb-docker" volumes=/mnt/mongodb/ng_client_mongodb:/var/lib/mongodb env='REPL_SET=ng_clients' command="/sbin/mongodb-docker setupReplicaSet admin" name='ng_client_mongodb_rs' hostname="ng_client_mongodb" state=running
+  docker: image="castawaylabs/mongodb-docker" volumes=/home/ng_client_mongodb:/var/lib/mongodb env='REPL_SET=ng_clients' command="/sbin/mongodb-docker setupReplicaSet admin" name='ng_client_mongodb_rs' hostname="ng_client_mongodb" state=running
   when: ng_client_mongodb_is_setup.stat.exists == False
 
 - name: "Wait until docker stops"
@@ -107,7 +107,7 @@
     db: "admin"
     container: "ng_client_mongodb"
     hostname: "ng_client_mongodb"
-    volume: "/mnt/mongodb/ng_client_mongodb:/var/lib/mongodb"
+    volume: "/home/ng_client_mongodb:/var/lib/mongodb"
     env: "REPL_SET=ng"
     user: "{{ admin_mongodb_user }}"
     pass: "{{ admin_mongodb_pass }}"
@@ -118,16 +118,16 @@
   when: ng_client_mongodb_is_setup.stat.exists == False
 
 - name: "touch a setup file"
-  file: path=/mnt/mongodb/ng_client_mongodb_is_setup state=touch
+  file: path=/home/ng_client_mongodb_is_setup state=touch
   when: ng_client_mongodb_is_setup.stat.exists == False
 
 - name: Run NodeGear Client Mongodb
-  docker: image="castawaylabs/mongodb-docker" volumes="/mnt/mongodb/ng_client_mongodb:/var/lib/mongodb" env="REPL_SET=ng_clients" ports="{{ admin_mongodb_ip }}:27017:27017" hostname="ng_client_mongodb" name="ng_client_mongodb" state=running
+  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_client_mongodb:/var/lib/mongodb" env="REPL_SET=ng_clients" ports="{{ admin_mongodb_ip }}:27017:27017" hostname="ng_client_mongodb" name="ng_client_mongodb" state=running
 
 # Setup MySQL
 
 - name: Run Nodegear MySQL
-  docker: image="tutum/mysql" ports="{{ admin_mysql_ip }}:3306:3306" volumes="/mnt/mongodb/ng_mysql:/var/lib/mysql" env="MYSQL_PASS=egaem9uhaebaesh0ahjangeepee6CheeX4feeYea" name="ng_mysql_db" state=running
+  docker: image="tutum/mysql" ports="{{ admin_mysql_ip }}:3306:3306" volumes="/home/ng_mysql:/var/lib/mysql" env="MYSQL_PASS=egaem9uhaebaesh0ahjangeepee6CheeX4feeYea" name="ng_mysql_db" state=running
 
 # MMS Stuff
 

@@ -1,7 +1,7 @@
 ---
 
 - name: Update ng-backend
-  git: repo=ssh://git@lab.castawaylabs.com/nodegear/ng-backend.git dest=/home/ng-backend key_file=/root/ng_key accept_hostkey=yes
+  git: repo=ssh://git@lab.castawaylabs.com/nodegear/ng-backend.git dest=/home/ng-backend key_file=/root/ng_key accept_hostkey=yes version=ff525cf4670d1ad00f75d69bdcf9f73388ed8f28
 
 - name: Install credentials
   template: src=ng_backend.json dest=/home/ng-backend/lib/credentials.json
