@@ -29,5 +29,10 @@
 		"price": {{ server_price }},
 		"address": "{{ server_ip }}",
 		"app_memory": {{ server_memory }}
+	},
+	"storage": {
+		"enabled": true,
+		"server": "http://{{ fs_ip }}:{{ fs_port }}",
+		"auth": "ng_fs"
 	}
 }

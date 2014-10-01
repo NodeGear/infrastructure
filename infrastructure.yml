@@ -6,7 +6,6 @@
   sudo: yes
 
   vars_files:
-    - vars/infrastructure.yml
     - vars/keys.yml
 
   tasks:
@@ -21,4 +20,6 @@
       file: mode=0600 path=/root/ng_key
 
     - include: tasks/newrelic.yml
-    - include: tasks/firewall.yml
+      when: newrelic_license_key|default("") != ""
+
+#    - include: tasks/firewall.yml

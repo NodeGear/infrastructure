@@ -1,0 +1,7 @@
+---
+
+- include: infrastructure.yml
+- include: services.yml
+- include: backend.yml
+- include: proxy.yml
+- include: frontend.yml

@@ -1,0 +1,69 @@
+services_ip: 10.240.173.186
+backend_ip: 10.240.93.2
+
+# Backend
+server_id: eu-dev
+server_name: EU-Development
+server_price: 0.007
+server_memory: 256
+server_ip: "{{ backend_ip }}"
+
+# ng-fs API
+fs_port: 8888
+fs_dir: /var/lib/ng_fs
+fs_auth_token: ng_fs
+fs_ip: "{{ services_ip }}"
+
+# Mongolab
+mongolab_endpoint: ""
+mongolab_sso_salt: ""
+
+# Frontend switches
+use_analytics: false
+is_ssl: false
+
+# Redis/mongo/mysql (services stuff)
+redis_ip: "{{ services_ip }}"
+mongo_ip: "{{ services_ip }}"
+admin_mysql_ip: "{{ services_ip }}"
+admin_mongodb_ip: "{{ services_ip }}"
+
+# MMS Backup API key
+mms_key: ""
+
+# Other API keys
+redis_key: yep
+newrelic_key: ""
+bugsnag_key: ""
+newrelic_license_key: ""
+
+# Payment
+stripe_pub: pk_test_YmJEMIhaSRCwfxuoKEJzt7z0
+stripe_secret: sk_test_mmZnb9OiVoxdrFj6wuQGvMvP
+
+# SMTP
+smtp_user: "matej@matej.me"
+smtp_pass: eELIT9FIJIU52NaWvrMrPg
+
+# Databases..
+
+# The nodegear mongodb admin authentication
+mongodb_admin_user: castawaylabs
+mongodb_admin_pass: mongodb_admin_pass
+mongodb_admin_permissions: "{ role: 'userAdminAnyDatabase', db: 'admin' }, { role: 'readWriteAnyDatabase', db: 'admin' }, { role: 'dbAdminAnyDatabase', db: 'admin' }, { role: 'root', db: 'admin' }"
+
+# What nodegear uses for authentication to db above
+mongodb_auth_user: ng
+mongodb_auth_pass: mongodb_auth_pass
+mongodb_auth_permissions: "{ role: 'readWrite', db: 'ng' }"
+
+# Network auth
+mongodb_auth_network_user: ng
+mongodb_auth_network_pass: mongodb_auth_pass
+mongodb_auth_network_permissions: "{ role: 'readWrite', db: 'ngNetwork' }"
+
+# Separate databases for client connections
+admin_mysql_user: admin
+admin_mysql_pass: mysql_password
+admin_mongodb_user: admin
+admin_mongodb_pass: admin_mongodb_pass

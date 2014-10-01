@@ -6,9 +6,9 @@
   sudo: yes
 
   vars_files:
-    - vars/infrastructure.yml
     - vars/keys.yml
 
   roles:
     - services
     - git
+    - fs

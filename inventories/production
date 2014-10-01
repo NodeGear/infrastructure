@@ -13,3 +13,9 @@
 [services]
 
 130.211.97.54
+
+[production:children]
+frontend
+backend
+proxy
+services
