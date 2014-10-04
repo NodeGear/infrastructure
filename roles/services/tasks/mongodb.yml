@@ -9,7 +9,7 @@
 # Setup replica set
 
 - name: "set up mongodb replica"
-  docker:
+  docker: >
     image="castawaylabs/mongodb-docker"
     volumes=/var/lib/ng_mongodb:/var/lib/mongodb
     env='REPL_SET=ng'
@@ -64,7 +64,7 @@
   when: ng_mongodb_is_setup.stat.exists == False
 
 - name: Run NodeGear Mongodb
-  docker:
+  docker: >
     image="castawaylabs/mongodb-docker"
     volumes="/var/lib/ng_mongodb:/var/lib/mongodb"
     env="REPL_SET=ng"

@@ -2,11 +2,7 @@
 
 - name: Installs Backend
   hosts: backend
-  user: ansible_connect
   sudo: yes
-
-  vars_files:
-    - vars/keys.yml
 
   roles:
     - backend

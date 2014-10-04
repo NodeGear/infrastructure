@@ -4,10 +4,10 @@
 # ng_redis
 
 - name: Run NodeGear Redis
-  docker:
-    image="castawaylabs/redis-docker"
+  docker: >
+    image=castawaylabs/redis-docker
     env="REDIS_PASSWORD={{ redis_key }}"
     ports="{{ redis_ip }}:{{ redis_port }}:6379"
-    name="ng_redis"
+    name=ng_redis
     volumes="/var/lib/ng_redis:/var/lib/redis"
     state=running

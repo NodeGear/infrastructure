@@ -1,13 +1,16 @@
 ---
 
 - name: Update ng-git
-  git:
+  git: >
     repo={{ apps.git.git_repo }}
     dest={{ apps.git.location }}
     key_file=/root/ng_key
     accept_hostkey=yes
     version={{ apps.git.version }}
   when: apps.git.is_git == True
+  tags:
+    - git_repo_update
+    - repo_update
 
 - name: Install credentials
   template: src=ng_git.json dest={{ apps.git.location }}/lib/credentials.json
@@ -16,7 +19,7 @@
   docker: image="castawaylabs/node-docker" name="ng_git" state=absent
 
 - name: Run NG-Git
-  docker:
+  docker: >
     image="castawaylabs/node-docker"
     volumes="{{ apps.git.location }}:/srv/app"
     net="host"

@@ -4,8 +4,5 @@
   hosts: frontend
   sudo: yes
 
-  vars_files:
-    - vars/keys.yml
-
   roles:
     - frontend

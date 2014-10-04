@@ -1,38 +1,32 @@
 ---
 
-- name: Update fs
-  git:
-    repo={{ apps.fs.git_repo }}
-    dest={{ apps.fs.location }}
-    accept_hostkey=yes
-    env={{ apps.fs.env }}
-    version={{ apps.fs.version }}
-  when: apps.fs.is_git == True
-
 - name: Update ng-backend
-  git:
+  git: >
   	repo={{ apps.backend.git_repo }}
   	dest={{ apps.backend.location }}
   	key_file=/root/ng_key
   	accept_hostkey=yes
   	version={{ apps.backend.version }}
   when: apps.backend.is_git == True
+  tags:
+    - backend_repo_update
+    - repo_update
 
 - name: Install credentials
-  template:
+  template: >
   	src=ng_backend.json
   	dest={{ apps.backend.location }}/lib/credentials.json
 
 # Effectively a file proxy.. The socket is mounted as volume inside the docker. It runs well, so whatever.
 
 - name: Remove NG-Backend
-  docker:
+  docker: >
   	image=castawaylabs/node-docker
   	name=ng_backend
   	state=absent
 
 - name: Run NG-Backend
-  docker:
+  docker: >
   	image=castawaylabs/node-docker
   	volumes="{{ apps.backend.location }}:/srv/app,/proc:/outside_proc,/var/run/docker.sock:/var/run/docker.sock,/home/ng_users:/home"
   	name=ng_backend

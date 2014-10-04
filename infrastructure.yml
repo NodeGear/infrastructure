@@ -4,9 +4,6 @@
   hosts: all
   sudo: yes
 
-  vars_files:
-    - vars/keys.yml
-
   tasks:
     - stat: path=/sbin/insserv
       register: insserv_exists
@@ -18,13 +15,33 @@
     - include: tasks/docker.yml
 
     - include: tasks/collectd.yml
+      tags:
+        - collectd
 
     - name: ng_key
-      copy: content="{{ ng_key }}" dest=/root/ng_key
+      copy: >
+        content="{{ ng_key }}"
+        dest=/root/ng_key
+      when: ng_key|default("") != ""
+      tags:
+        - git_key
+
     - name: ng_key.pub
-      copy: src=files/ng_key.pub dest=/root/ng_key.pub
+      copy: >
+        src=files/ng_key.pub
+        dest=/root/ng_key.pub
+      tags:
+        - git_key
+
     - name: Permissions for ng_key
-      file: mode=0600 path=/root/ng_key
+      file: >
+        mode=0600
+        path=/root/ng_key
+      when: ng_key|default("") != ""
+      tags:
+        - git_key
 
     - include: tasks/newrelic.yml
       when: newrelic_license_key|default("") != ""
+      tags:
+        - newrelic

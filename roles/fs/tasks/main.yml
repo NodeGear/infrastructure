@@ -1,12 +1,15 @@
 ---
 
 - name: Update fs
-  git:
+  git: >
     repo={{ apps.fs.git_repo }}
     dest={{ apps.fs.location }}
     accept_hostkey=yes
     version={{ apps.fs.version }}
   when: apps.fs.is_git == True
+  tags:
+    - fs_repo_update
+    - repo_update
 
 - name: Install credentials
   template: src=credentials.json dest={{ apps.fs.location }}/lib/credentials.json
@@ -15,7 +18,7 @@
   docker: image=castawaylabs/node-docker name=fs state=absent
 
 - name: Run fs
-  docker:
+  docker: >
     image=castawaylabs/node-docker
     name=fs
     env={{ apps.fs.env }}

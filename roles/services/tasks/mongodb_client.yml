@@ -9,13 +9,13 @@
   register: ng_client_mongodb_is_setup
 
 - name: "set up mongodb replica"
-  docker:
-    image="castawaylabs/mongodb-docker"
+  docker: >
+    image=castawaylabs/mongodb-docker
     volumes=/var/lib/ng_client_mongodb:/var/lib/mongodb
     env='REPL_SET=ng_clients'
     command="/sbin/mongodb-docker setupReplicaSet admin"
-    name='ng_client_mongodb_rs'
-    hostname="ng_client_mongodb"
+    name=ng_client_mongodb_rs
+    hostname=ng_client_mongodb
     state=running
   when: ng_client_mongodb_is_setup.stat.exists == False
 
@@ -24,7 +24,7 @@
   when: ng_client_mongodb_is_setup.stat.exists == False
 
 - name: "remove replica set container"
-  docker:
+  docker: >
     image="castawaylabs/mongodb-docker"
     name=ng_client_mongodb_rs
     state=absent
@@ -46,7 +46,7 @@
     roles: "'clusterAdmin', 'readWriteAnyDatabase', 'userAdminAnyDatabase', 'dbAdminAnyDatabase', { role: 'readWrite', db: 'admin' }, { role: 'readWrite', db: 'local' }, { role: 'root', db: 'admin' }"
 
 - name: "ng_client_mongodb is not set up, stop ng_client_mongodb and remove the container"
-  docker:
+  docker: >
     image="castawaylabs/mongodb-docker"
     name="ng_client_mongodb"
     state=absent
@@ -57,11 +57,11 @@
   when: ng_client_mongodb_is_setup.stat.exists == False
 
 - name: Run NodeGear Client Mongodb
-  docker:
-    image="castawaylabs/mongodb-docker"
+  docker: >
+    image=castawaylabs/mongodb-docker
     volumes="/var/lib/ng_client_mongodb:/var/lib/mongodb"
     env="REPL_SET=ng_clients"
     ports="{{ admin_mongodb_ip }}:27017:27017"
-    hostname="ng_client_mongodb"
-    name="ng_client_mongodb"
+    hostname=ng_client_mongodb
+    name=ng_client_mongodb
     state=running

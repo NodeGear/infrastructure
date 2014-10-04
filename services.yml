@@ -4,9 +4,6 @@
   hosts: services
   sudo: yes
 
-  vars_files:
-    - vars/keys.yml
-
   roles:
     - services
     - git

@@ -1,7 +1,13 @@
 ---
 
 - name: Update proxy
-  git: repo=git://github.com/castawaylabs/dproxy.js.git dest=/home/proxy accept_hostkey=True
+  git: >
+    repo=git://github.com/castawaylabs/dproxy.js.git
+    dest=/home/proxy
+    accept_hostkey=True
+  tags:
+    - proxy_repo_update
+    - repo_update
 
 - name: Install credentials
   template: src=credentials.js dest=/home/proxy/lib/credentials.js
@@ -19,4 +25,11 @@
   docker: image="castawaylabs/node-docker" name="ng_proxy" state=absent
 
 - name: Run NG-proxy
-  docker: image="castawaylabs/node-docker" volumes="/home/proxy:/srv/app" name="ng_proxy" env="NODE_ENV=production" ports="80:80,443:443" net="host" state=running
+  docker: >
+    image=castawaylabs/node-docker
+    volumes="/home/proxy:/srv/app"
+    name=ng_proxy
+    env="NODE_ENV=production"
+    ports="80:80,443:443"
+    net=host
+    state=running
