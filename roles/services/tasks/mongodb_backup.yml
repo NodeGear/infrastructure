@@ -1,0 +1,42 @@
+---
+
+# MMS Stuff
+
+# Delete happens because sometimes ng_mongodb is removed, and then the link isn't reestablished
+
+- name: Delete MMS Docker
+  docker:
+    image="castawaylabs/mms-docker"
+    name="mms"
+    state=absent
+
+- name: Run MMS Backup Docker
+  docker:
+    image="castawaylabs/mms-backup-docker"
+    name="mms_backup"
+    state=absent
+  when: mms_key|default("") != "" 
+
+###
+# MMS Monitoring
+
+- name: Run MMS Docker
+  docker:
+    image="castawaylabs/mms-docker"
+    name=mms
+    env="MMS_KEY={{ mms_key }}"
+    links="ng_mongodb:ng_mongodb,ng_client_mongodb:ng_client_mongodb"
+    state=running
+  when: mms_key|default("") != "" 
+
+###
+# MMS Backup
+
+- name: Run MMS Backup Docker
+  docker:
+    image="castawaylabs/mms-backup-docker"
+    name=mms_backup
+    env="MMS_KEY={{ mms_key }}"
+    links="ng_mongodb:ng_mongodb,ng_client_mongodb:ng_client_mongodb"
+    state=running
+  when: mms_key|default("") != "" 

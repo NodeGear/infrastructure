@@ -1,16 +1,35 @@
 ---
 
 - name: Update NG-Frontend
-  git: repo=ssh://git@lab.castawaylabs.com/nodegear/ng-frontend.git dest=/home/ng-frontend key_file=/root/ng_key accept_hostkey=yes update=yes force=yes
+  git:
+    repo="{{ apps.frontend.git_repo }}"
+    dest="{{ apps.frontend.location }}"
+    key_file=/root/ng_key
+    accept_hostkey=yes
+    update=yes
+    force=yes
+    version={{ apps.frontend.version }}
+  when: apps.frontend.is_git == True
 
 - name: Install credentials
-  template: src=ng_frontend.json dest=/home/ng-frontend/lib/credentials.json
+  template:
+    src=ng_frontend.json
+    dest={{ apps.frontend.location }}/lib/credentials.json
 
 - name: Remove NG-Frontend
-  docker: image=castawaylabs/node-docker name=ng_frontend state=absent
+  docker:
+    image=castawaylabs/node-docker
+    name=ng_frontend
+    state=absent
 
 - name: Run NG-Frontend
-  docker: image=castawaylabs/node-docker volumes="/home/ng-frontend:/srv/app,/root/ng_key:/root/.ssh/id_rsa,/root/ng_key.pub:/root/.ssh/id_rsa.pub" ports="127.0.0.1:5050:80" name=ng_frontend env="PORT=80,NODE_ENV=production" state=running
+  docker:
+    image=castawaylabs/node-docker
+    volumes="{{ apps.frontend.location }}:/srv/app"
+    ports="127.0.0.1:5050:80"
+    name=ng_frontend
+    env="PORT=80{{ apps.frontend.env }}"
+    state=running
 
 - name: Install NGINX
   include: nginx.yml

@@ -1,0 +1,67 @@
+---
+
+###
+# Client mongodb
+
+# Mongodb
+
+- stat: path=/var/lib/ng_client_mongodb_is_setup
+  register: ng_client_mongodb_is_setup
+
+- name: "set up mongodb replica"
+  docker:
+    image="castawaylabs/mongodb-docker"
+    volumes=/var/lib/ng_client_mongodb:/var/lib/mongodb
+    env='REPL_SET=ng_clients'
+    command="/sbin/mongodb-docker setupReplicaSet admin"
+    name='ng_client_mongodb_rs'
+    hostname="ng_client_mongodb"
+    state=running
+  when: ng_client_mongodb_is_setup.stat.exists == False
+
+- name: "Wait until docker stops"
+  command: docker wait ng_client_mongodb_rs
+  when: ng_client_mongodb_is_setup.stat.exists == False
+
+- name: "remove replica set container"
+  docker:
+    image="castawaylabs/mongodb-docker"
+    name=ng_client_mongodb_rs
+    state=absent
+  when: ng_client_mongodb_is_setup.stat.exists == False
+
+# Setup mongodb users
+
+- name: admin user
+  include: setup_mongodb.yml
+  when: ng_client_mongodb_is_setup.stat.exists == False
+  vars:
+    db: "admin"
+    container: "ng_client_mongodb"
+    hostname: "ng_client_mongodb"
+    volume: "/var/lib/ng_client_mongodb:/var/lib/mongodb"
+    env: "REPL_SET=ng"
+    user: "{{ admin_mongodb_user }}"
+    pass: "{{ admin_mongodb_pass }}"
+    roles: "'clusterAdmin', 'readWriteAnyDatabase', 'userAdminAnyDatabase', 'dbAdminAnyDatabase', { role: 'readWrite', db: 'admin' }, { role: 'readWrite', db: 'local' }, { role: 'root', db: 'admin' }"
+
+- name: "ng_client_mongodb is not set up, stop ng_client_mongodb and remove the container"
+  docker:
+    image="castawaylabs/mongodb-docker"
+    name="ng_client_mongodb"
+    state=absent
+  when: ng_client_mongodb_is_setup.stat.exists == False
+
+- name: "touch a setup file"
+  file: path=/var/lib/ng_client_mongodb_is_setup state=touch
+  when: ng_client_mongodb_is_setup.stat.exists == False
+
+- name: Run NodeGear Client Mongodb
+  docker:
+    image="castawaylabs/mongodb-docker"
+    volumes="/var/lib/ng_client_mongodb:/var/lib/mongodb"
+    env="REPL_SET=ng_clients"
+    ports="{{ admin_mongodb_ip }}:27017:27017"
+    hostname="ng_client_mongodb"
+    name="ng_client_mongodb"
+    state=running

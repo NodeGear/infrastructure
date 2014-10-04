@@ -1,13 +1,24 @@
 ---
 
 - name: Update fs
-  git: repo=git://github.com/nodegear/fs-api.git dest=/home/fs accept_hostkey=yes
+  git:
+    repo={{ apps.fs.git_repo }}
+    dest={{ apps.fs.location }}
+    accept_hostkey=yes
+    version={{ apps.fs.version }}
+  when: apps.fs.is_git == True
 
 - name: Install credentials
-  template: src=credentials.json dest=/home/fs/lib/credentials.json
+  template: src=credentials.json dest={{ apps.fs.location }}/lib/credentials.json
 
 - name: Remove fs
   docker: image=castawaylabs/node-docker name=fs state=absent
 
 - name: Run fs
-  docker: image=castawaylabs/node-docker name=fs env=NODE_ENV=production ports="{{ fs_ip }}:{{ fs_port }}:80" state=running volumes="/home/fs:/srv/app,{{ fs_dir }}:/files"
+  docker:
+    image=castawaylabs/node-docker
+    name=fs
+    env={{ apps.fs.env }}
+    ports="{{ apps.fs.ip }}:{{ apps.fs.port }}:80"
+    state=running
+    volumes="{{ apps.fs.location }}:/srv/app,{{ apps.fs.dir }}:/files"

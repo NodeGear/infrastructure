@@ -1,0 +1,48 @@
+---
+
+- stat: path=/etc/init.d/collectd
+  register: collectd_compiled
+
+- name: Get build tools
+  apt: name={{ item }} state=present
+  with_items: ['build-essential', 'librrd2-dev', 'libsensors4-dev', 'libsnmp-dev', 'libgcrypt-dev', 'chkconfig']
+  when: collectd_compiled.stat.exists == False
+
+- name: Get collectd.tar.gz
+  get_url: url=https://collectd.org/files/collectd-5.4.1.tar.gz dest=/tmp/collectd-5.4.1.tar.gz
+  when: collectd_compiled.stat.exists == False
+
+- name: Unarchive collectd
+  unarchive: src=/tmp/collectd-5.4.1.tar.gz dest=/tmp/ copy=no
+  when: collectd_compiled.stat.exists == False
+
+- name: Configure
+  command: ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib --mandir=/usr/share/man
+  args:
+    chdir: /tmp/collectd-5.4.1
+  when: collectd_compiled.stat.exists == False
+
+- name: Compile
+  command: make
+  args:
+    chdir: /tmp/collectd-5.4.1
+  when: collectd_compiled.stat.exists == False
+
+- name: install
+  command: make install
+  args:
+    chdir: /tmp/collectd-5.4.1
+  when: collectd_compiled.stat.exists == False
+
+- name: Configure collectd
+  template: src=collectd.conf.j2 dest=/etc/collectd.conf
+
+- name: Add init.d daemon
+  copy: src=collectd.init.conf dest=/etc/init.d/collectd group=root owner=root mode=0755
+
+- command: chkconfig --add collectd
+
+- name: Start collectd
+  service: name=collectd state=restarted enabled=yes
+
+- command: chkconfig collectd on

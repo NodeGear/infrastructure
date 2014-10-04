@@ -1,155 +1,18 @@
 ---
 
-###
-# ng_redis
+- include: images.yml
 
-- name: Run NodeGear Redis
-  docker: image="castawaylabs/redis-docker" env="REDIS_PASSWORD={{ redis_key }}" ports="{{ redis_ip }}:6379:6379" name="ng_redis" volumes="/var/lib/mongodb/ng_redis:/var/lib/redis" state=running
+- name: Install Redis
+  include: redis.yml
 
-###
-# ng_mongodb
+- name: Set up Mongodb
+  include: mongodb.yml
 
-- stat: path=/var/lib/mongodb/ng_mongodb_is_setup
-  register: ng_mongodb_is_setup
+- name: Set up Client Mongodb
+  include: mongodb_client.yml
 
-# Setup replica set
+- name: Set up MySQL
+  include: mysql.yml
 
-- name: "set up mongodb replica"
-  docker: image="castawaylabs/mongodb-docker" volumes=/var/lib/mongodb/ng_mongodb:/var/lib/mongodb env='REPL_SET=ng' command="/sbin/mongodb-docker setupReplicaSet admin" name='ng_mongodb_rs' hostname="ng_mongodb" state=running
-  when: ng_mongodb_is_setup.stat.exists == False
-
-- name: "Wait until docker stops"
-  command: docker wait ng_mongodb_rs
-  when: ng_mongodb_is_setup.stat.exists == False
-
-- name: "remove replica set container"
-  docker: image="castawaylabs/mongodb-docker" name=ng_mongodb_rs state=absent
-  when: ng_mongodb_is_setup.stat.exists == False
-
-# Setup mongodb users
-
-- name: admin user
-  include: setup_mongodb.yml
-  when: ng_mongodb_is_setup.stat.exists == False
-  vars:
-    db: "admin"
-    container: "ng_mongodb"
-    hostname: "ng_mongodb"
-    volume: "/var/lib/mongodb/ng_mongodb:/var/lib/mongodb"
-    env: "REPL_SET=ng"
-    user: "{{ mongodb_admin_user }}"
-    pass: "{{ mongodb_admin_pass }}"
-    roles: "{{ mongodb_admin_permissions }}"
-
-- name: ng user
-  include: setup_mongodb.yml
-  when: ng_mongodb_is_setup.stat.exists == False
-  vars:
-    db: "ng"
-    container: "ng_mongodb"
-    hostname: "ng_mongodb"
-    volume: "/var/lib/mongodb/ng_mongodb:/var/lib/mongodb"
-    env: "REPL_SET=ng"
-    user: "{{ mongodb_auth_user }}"
-    pass: "{{ mongodb_auth_pass }}"
-    roles: "{{ mongodb_auth_permissions }}"
-
-- name: ngNetwork user
-  include: setup_mongodb.yml
-  when: ng_mongodb_is_setup.stat.exists == False
-  vars:
-    db: "ngNetwork"
-    container: "ng_mongodb"
-    hostname: "ng_mongodb"
-    volume: "/var/lib/mongodb/ng_mongodb:/var/lib/mongodb"
-    env: "REPL_SET=ng"
-    user: "{{ mongodb_auth_network_user }}"
-    pass: "{{ mongodb_auth_network_pass }}"
-    roles: "{{ mongodb_auth_network_permissions }}"
-
-- name: "ng_mongodb is not set up, stop ng_mongodb and remove the container"
-  docker: image="castawaylabs/mongodb-docker" name="ng_mongodb" state=absent
-  when: ng_mongodb_is_setup.stat.exists == False
-
-- name: "touch a setup file"
-  file: path=/home/ng_mongodb_is_setup state=touch
-  when: ng_mongodb_is_setup.stat.exists == False
-
-- name: Run NodeGear Mongodb
-  docker: image="castawaylabs/mongodb-docker" volumes="/home/ng_mongodb:/var/lib/mongodb" env="REPL_SET=ng" ports="{{ mongo_ip }}:2017:27017" hostname="ng_mongodb" name="ng_mongodb" state=running
-
-###
-# Client stuff
-
-# Mongodb
-
-- stat: path=/home/ng_client_mongodb_is_setup
-  register: ng_client_mongodb_is_setup
-
-- name: "set up mongodb replica"
-  docker: image="castawaylabs/mongodb-docker" volumes=/home/ng_client_mongodb:/var/lib/mongodb env='REPL_SET=ng_clients' command="/sbin/mongodb-docker setupReplicaSet admin" name='ng_client_mongodb_rs' hostname="ng_client_mongodb" state=running
-  when: ng_client_mongodb_is_setup.stat.exists == False
-
-- name: "Wait until docker stops"
-  command: docker wait ng_client_mongodb_rs
-  when: ng_client_mongodb_is_setup.stat.exists == False
-
-- name: "remove replica set container"
-  docker: image="castawaylabs/mongodb-docker" name=ng_client_mongodb_rs state=absent
-  when: ng_client_mongodb_is_setup.stat.exists == False
-
-# Setup mongodb users
-
-- name: admin user
-  include: setup_mongodb.yml
-  when: ng_client_mongodb_is_setup.stat.exists == False
-  vars:
-    db: "admin"
-    container: "ng_client_mongodb"
-    hostname: "ng_client_mongodb"
-    volume: "/var/lib/mongodb/ng_client_mongodb:/var/lib/mongodb"
-    env: "REPL_SET=ng"
-    user: "{{ admin_mongodb_user }}"
-    pass: "{{ admin_mongodb_pass }}"
-    roles: "'clusterAdmin', 'readWriteAnyDatabase', 'userAdminAnyDatabase', 'dbAdminAnyDatabase', { role: 'readWrite', db: 'admin' }, { role: 'readWrite', db: 'local' }, { role: 'root', db: 'admin' }"
-
-- name: "ng_client_mongodb is not set up, stop ng_client_mongodb and remove the container"
-  docker: image="castawaylabs/mongodb-docker" name="ng_client_mongodb" state=absent
-  when: ng_client_mongodb_is_setup.stat.exists == False
-
-- name: "touch a setup file"
-  file: path=/var/lib/mongodb/ng_client_mongodb_is_setup state=touch
-  when: ng_client_mongodb_is_setup.stat.exists == False
-
-- name: Run NodeGear Client Mongodb
-  docker: image="castawaylabs/mongodb-docker" volumes="/var/lib/mongodb/ng_client_mongodb:/var/lib/mongodb" env="REPL_SET=ng_clients" ports="{{ admin_mongodb_ip }}:27017:27017" hostname="ng_client_mongodb" name="ng_client_mongodb" state=running
-
-# Setup MySQL
-
-- name: Run Nodegear MySQL
-  docker: image="tutum/mysql" ports="{{ admin_mysql_ip }}:3306:3306" volumes="/var/lib/mongodb/ng_mysql:/var/lib/mysql" env="MYSQL_PASS={{ admin_mysql_pass }}" name="ng_mysql_db" state=running
-
-# MMS Stuff
-
-# Delete happens because sometimes ng_mongodb is removed, and then the link isn't reestablished
-
-- name: Delete MMS Docker
-  docker: image="castawaylabs/mms-docker" name="mms" state=absent
-
-- name: Run MMS Backup Docker
-  docker: image="castawaylabs/mms-backup-docker" name="mms_backup" state=absent
-  when: mms_key|default("") != "" 
-
-###
-# MMS Monitoring
-
-- name: Run MMS Docker
-  docker: image="castawaylabs/mms-docker" name=mms env="MMS_KEY={{ mms_key }}" links="ng_mongodb:ng_mongodb,ng_client_mongodb:ng_client_mongodb" state=running
-  when: mms_key|default("") != "" 
-
-###
-# MMS Backup
-
-- name: Run MMS Backup Docker
-  docker: image="castawaylabs/mms-backup-docker" name=mms_backup env="MMS_KEY={{ mms_key }}" links="ng_mongodb:ng_mongodb,ng_client_mongodb:ng_client_mongodb" state=running
-  when: mms_key|default("") != "" 
+- name: Mongodb MMS Clients
+  include: mongodb_backup.yml

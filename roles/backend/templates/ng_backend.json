@@ -1,5 +1,5 @@
 {
-	"redis_port": 6379,
+	"redis_port": {{ redis_port }},
 	"redis_host": "{{ redis_ip }}",
 	"redis_key": "{{ redis_key }}",
 	"bugsnag_key": "{{ bugsnag_key }}",
@@ -7,16 +7,8 @@
 		"user": "{{ smtp_user }}",
 		"pass": "{{ smtp_pass }}"
 	},
-	"db": "mongodb://{{ mongodb_auth_user }}:{{ mongodb_auth_pass }}@{{ mongo_ip }}:2017/ng",
-	"networkDb": "mongodb://{{ mongodb_auth_network_user }}:{{ mongodb_auth_network_pass }}@{{ mongo_ip }}:2017/ngNetwork",
+	"db": "mongodb://{{ mongodb_auth_user }}:{{ mongodb_auth_pass }}@{{ mongo_ip }}:{{ mongodb_port }}/ng",
 	"db_options": {
-		"auto_reconnect": true,
-		"native_parser": true,
-		"server": {
-			"auto_reconnect": true
-		}
-	},
-	"networkDb_options": {
 		"auto_reconnect": true,
 		"native_parser": true,
 		"server": {
@@ -32,7 +24,9 @@
 	},
 	"storage": {
 		"enabled": true,
-		"server": "http://{{ fs_ip }}:{{ fs_port }}",
-		"auth": "ng_fs"
-	}
+		"server": "http://{{ apps.fs.ip }}:{{ apps.fs.port }}",
+		"auth": "{{ apps.fs.auth }}"
+	},
+	"statsd_ip": "{{ apps.graphite.ip }}",
+	"statsd_port": {{ apps.graphite.statsd }}
 }

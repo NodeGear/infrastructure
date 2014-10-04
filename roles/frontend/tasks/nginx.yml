@@ -19,7 +19,6 @@
   template: src=nginx_ssl.j2 dest="/etc/nginx/conf.d/ng_frontend.conf"
   when: is_ssl == True
 
-
 - name: Install nodegear.io.crt
   copy: content="{{ nodegear_io_crt }}" dest=/etc/ssl/private/nodegear.crt
   when: is_ssl == True

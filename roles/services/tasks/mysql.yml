@@ -1,0 +1,12 @@
+---
+
+# Setup MySQL
+
+- name: Run Nodegear MySQL
+  docker:
+    image="tutum/mysql:5.6"
+    ports="{{ admin_mysql_ip }}:3306:3306"
+    volumes="/var/lib/ng_mysql:/var/lib/mysql"
+    env="MYSQL_PASS={{ admin_mysql_pass }}"
+    name="ng_mysql_db"
+    state=running

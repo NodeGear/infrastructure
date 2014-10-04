@@ -1,0 +1,21 @@
+---
+
+- name: Get Graphite image
+  command: docker pull castawaylabs/graphite-statsd
+
+- name: Install passlib
+  pip: name=passlib state=present
+
+- name: Nginx auth password
+  htpasswd: path=/var/lib/graphite_nginx.htpasswd name={{ apps.graphite.user }} password={{ apps.graphite.password }}
+
+- name: nginx conf (to enable auth)
+  copy: src=graphite_nginx.conf dest=/var/lib/graphite_nginx.conf
+
+- name: Run graphite
+  docker:
+    image=castawaylabs/graphite-statsd
+    ports="{{ apps.graphite.ip }}:{{ apps.graphite.statsd }}:8125/udp,{{ apps.graphite.ip }}:{{ apps.graphite.graphite }}:80,{{ apps.graphite.ip }}:{{ apps.graphite.carbon }}:2003"
+    name="graphite"
+    volumes="/var/lib/graphite_nginx.conf:/etc/nginx/sites-enabled/graphite,/var/lib/graphite_nginx.htpasswd:/etc/nginx/.htpasswd"
+    state=running

@@ -1,16 +1,23 @@
 ---
 
 - name: Installs Docker and Firewall
-  hosts: backend
-  user: ansible_connect
+  hosts: all
   sudo: yes
 
   vars_files:
     - vars/keys.yml
 
   tasks:
+    - stat: path=/sbin/insserv
+      register: insserv_exists
+    - name: Symlink insserv
+      file: src=/usr/lib/insserv/insserv dest=/sbin/insserv state=link
+      when: insserv_exists.stat.exists == False
+
     - apt: name=apt-transport-https
     - include: tasks/docker.yml
+
+    - include: tasks/collectd.yml
 
     - name: ng_key
       copy: content="{{ ng_key }}" dest=/root/ng_key

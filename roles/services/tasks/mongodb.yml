@@ -1,0 +1,74 @@
+---
+
+###
+# ng_mongodb
+
+- stat: path=/var/lib/ng_mongodb_is_setup
+  register: ng_mongodb_is_setup
+
+# Setup replica set
+
+- name: "set up mongodb replica"
+  docker:
+    image="castawaylabs/mongodb-docker"
+    volumes=/var/lib/ng_mongodb:/var/lib/mongodb
+    env='REPL_SET=ng'
+    command="/sbin/mongodb-docker setupReplicaSet admin"
+    name='ng_mongodb_rs'
+    hostname="ng_mongodb"
+    state=running
+  when: ng_mongodb_is_setup.stat.exists == False
+
+- name: "Wait until docker stops"
+  command: docker wait ng_mongodb_rs
+  when: ng_mongodb_is_setup.stat.exists == False
+
+- name: "remove replica set container"
+  docker: image="castawaylabs/mongodb-docker" name=ng_mongodb_rs state=absent
+  when: ng_mongodb_is_setup.stat.exists == False
+
+# Setup mongodb users
+
+- name: admin user
+  include: setup_mongodb.yml
+  when: ng_mongodb_is_setup.stat.exists == False
+  vars:
+    db: "admin"
+    container: "ng_mongodb"
+    hostname: "ng_mongodb"
+    volume: "/var/lib/ng_mongodb:/var/lib/mongodb"
+    env: "REPL_SET=ng"
+    user: "{{ mongodb_admin_user }}"
+    pass: "{{ mongodb_admin_pass }}"
+    roles: "{{ mongodb_admin_permissions }}"
+
+- name: ng user
+  include: setup_mongodb.yml
+  when: ng_mongodb_is_setup.stat.exists == False
+  vars:
+    db: "ng"
+    container: "ng_mongodb"
+    hostname: "ng_mongodb"
+    volume: "/var/lib/ng_mongodb:/var/lib/mongodb"
+    env: "REPL_SET=ng"
+    user: "{{ mongodb_auth_user }}"
+    pass: "{{ mongodb_auth_pass }}"
+    roles: "{{ mongodb_auth_permissions }}"
+
+- name: "ng_mongodb is not set up, stop ng_mongodb and remove the container"
+  docker: image="castawaylabs/mongodb-docker" name="ng_mongodb" state=absent
+  when: ng_mongodb_is_setup.stat.exists == False
+
+- name: "touch a setup file"
+  file: path=/var/lib/ng_mongodb_is_setup state=touch
+  when: ng_mongodb_is_setup.stat.exists == False
+
+- name: Run NodeGear Mongodb
+  docker:
+    image="castawaylabs/mongodb-docker"
+    volumes="/var/lib/ng_mongodb:/var/lib/mongodb"
+    env="REPL_SET=ng"
+    ports="{{ mongo_ip }}:{{ mongodb_port }}:27017"
+    hostname="ng_mongodb"
+    name="ng_mongodb"
+    state=running

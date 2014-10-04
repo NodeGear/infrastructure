@@ -1,0 +1,11 @@
+---
+
+- name: Get docker image
+  command: docker pull {{ item.name }}:{{ item.tag }}
+  with_items:
+    - { name: castawaylabs/mongodb-docker, tag: latest }
+    - { name: castawaylabs/redis-docker, tag: latest }
+    - { name: tutum/mysql, tag: 5.6 }
+    - { name: castawaylabs/mms-docker, tag: latest }
+    - { name: castawaylabs/mms-backup-docker, tag: latest }
+    - { name: castawaylabs/graphite-statsd, tag: latest }

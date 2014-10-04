@@ -1,13 +1,25 @@
 ---
 
 - name: Update ng-git
-  git: repo=ssh://git@lab.castawaylabs.com/nodegear/ng-git.git dest=/home/ng-git key_file=/root/ng_key accept_hostkey=yes
+  git:
+    repo={{ apps.git.git_repo }}
+    dest={{ apps.git.location }}
+    key_file=/root/ng_key
+    accept_hostkey=yes
+    version={{ apps.git.version }}
+  when: apps.git.is_git == True
 
 - name: Install credentials
-  template: src=ng_git.json dest=/home/ng-git/lib/credentials.json
+  template: src=ng_git.json dest={{ apps.git.location }}/lib/credentials.json
 
 - name: Remove NG-Git
   docker: image="castawaylabs/node-docker" name="ng_git" state=absent
 
 - name: Run NG-Git
-  docker: image="castawaylabs/node-docker" volumes="/home/ng-git:/srv/app,/root/ng_key:/root/.ssh/id_rsa,/root/ng_key.pub:/root/.ssh/id_rsa.pub" net="host" name="ng_git" env="NODE_ENV=production" state=running
+  docker:
+    image="castawaylabs/node-docker"
+    volumes="{{ apps.git.location }}:/srv/app"
+    net="host"
+    name="ng_git"
+    env={{ apps.git.env }}
+    state=running

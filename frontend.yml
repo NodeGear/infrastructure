@@ -2,7 +2,6 @@
 
 - name: Installs Frontend
   hosts: frontend
-  user: ansible_connect
   sudo: yes
 
   vars_files:

@@ -2,7 +2,6 @@
 
 - name: Installs Services
   hosts: services
-  user: ansible_connect
   sudo: yes
 
   vars_files:
@@ -12,3 +11,4 @@
     - services
     - git
     - fs
+    - graphite
