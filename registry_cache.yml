@@ -1,0 +1,32 @@
+---
+
+- name: Create docker registry and cache images
+  hosts: all
+  sudo: yes
+
+  vars:
+    images:
+      - { name: castawaylabs/node-docker, tag: latest }
+      - { name: castawaylabs/mongodb-docker, tag: latest }
+      - { name: castawaylabs/redis-docker, tag: latest }
+      - { name: tutum/mysql, tag: 5.6 }
+      - { name: castawaylabs/mms-docker, tag: latest }
+      - { name: castawaylabs/mms-backup-docker, tag: latest }
+      - { name: castawaylabs/graphite-statsd, tag: latest }
+
+  tasks:
+    - apt: name=apt-transport-https
+    - include: tasks/docker.yml
+
+    - docker: image=registry name=registry state=present ports="5000:5000"
+    - name: Pull docker images
+      command: docker pull {{ item.name }}:{{ item.tag }}
+      with_items: images
+
+    - name: Tag the images
+      command: docker tag {{ item.name }}:{{ item.tag }} 10.0.3.5:5000/{{ item.name }}:{{ item.tag }}
+      with_items: images
+
+    - name: Ship images to registry
+      command: docker push 10.0.3.5:5000/{{ item.name }}:{{ item.tag }}
+      with_items: images

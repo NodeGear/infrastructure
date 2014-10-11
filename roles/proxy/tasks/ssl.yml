@@ -1,0 +1,27 @@
+---
+
+- name: Install SSL Certificate
+  copy: >
+    content="{{ ngapp_io_crt }}"
+    dest=/home/proxy/server.crt
+  tags:
+    - ssl
+    - proxy_ssl
+
+- name: Install SSL Key
+  copy: >
+    content="{{ ngapp_io_key }}"
+    dest=/home/proxy/server.key
+  when: apps.proxy.ssl == True
+  tags:
+    - ssl
+    - proxy_ssl
+
+- name: Install SSL CA Chain
+  copy: >
+    content="{{ ngapp_io_ca }}"
+    dest=/home/proxy/server.ca
+  when: apps.proxy.ssl == True
+  tags:
+    - ssl
+    - proxy_ssl

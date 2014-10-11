@@ -5,7 +5,7 @@
 
 - name: Run NodeGear Redis
   docker: >
-    image=castawaylabs/redis-docker
+    image="{{registry}}castawaylabs/redis-docker:latest"
     env="REDIS_PASSWORD={{ redis_key }}"
     ports="{{ redis_ip }}:{{ redis_port }}:6379"
     name=ng_redis

@@ -2,34 +2,34 @@
 
 - name: Update proxy
   git: >
-    repo=git://github.com/castawaylabs/dproxy.js.git
-    dest=/home/proxy
+    repo="{{ apps.proxy.git_repo }}"
+    dest="{{ apps.proxy.location }}"
     accept_hostkey=True
+  when: apps.proxy.is_git == True
   tags:
     - proxy_repo_update
     - repo_update
 
 - name: Install credentials
-  template: src=credentials.js dest=/home/proxy/lib/credentials.js
+  template: >
+    src=credentials.js
+    dest="{{ apps.proxy.location }}/lib/credentials.js"
 
-- name: Install SSL Certificate
-  copy: content="{{ ngapp_io_crt }}" dest=/home/proxy/server.crt
-
-- name: Install SSL Key
-  copy: content="{{ ngapp_io_key }}" dest=/home/proxy/server.key
-
-- name: Install SSL CA Chain
-  copy: content="{{ ngapp_io_ca }}" dest=/home/proxy/server.ca
+- include: ssl.yml
+  when: apps.proxy.ssl == True
 
 - name: Remove proxy
-  docker: image="castawaylabs/node-docker" name="ng_proxy" state=absent
+  docker: >
+    image="{{registry}}castawaylabs/node-docker:latest"
+    name=ng_proxy
+    state=absent
 
 - name: Run NG-proxy
   docker: >
-    image=castawaylabs/node-docker
-    volumes="/home/proxy:/srv/app"
+    image="{{registry}}castawaylabs/node-docker:latest"
+    volumes="{{ apps.proxy.location }}:/srv/app"
     name=ng_proxy
-    env="NODE_ENV=production"
+    env="{{ apps.proxy.env }}"
     ports="80:80,443:443"
     net=host
     state=running

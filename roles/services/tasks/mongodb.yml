@@ -10,7 +10,7 @@
 
 - name: "set up mongodb replica"
   docker: >
-    image="castawaylabs/mongodb-docker"
+    image="{{registry}}castawaylabs/mongodb-docker:latest"
     volumes=/var/lib/ng_mongodb:/var/lib/mongodb
     env='REPL_SET=ng'
     command="/sbin/mongodb-docker setupReplicaSet admin"
@@ -24,7 +24,10 @@
   when: ng_mongodb_is_setup.stat.exists == False
 
 - name: "remove replica set container"
-  docker: image="castawaylabs/mongodb-docker" name=ng_mongodb_rs state=absent
+  docker: >
+    image="{{registry}}castawaylabs/mongodb-docker:latest"
+    name=ng_mongodb_rs
+    state=absent
   when: ng_mongodb_is_setup.stat.exists == False
 
 # Setup mongodb users
@@ -56,7 +59,10 @@
     roles: "{{ mongodb_auth_permissions }}"
 
 - name: "ng_mongodb is not set up, stop ng_mongodb and remove the container"
-  docker: image="castawaylabs/mongodb-docker" name="ng_mongodb" state=absent
+  docker: >
+    image="{{registry}}castawaylabs/mongodb-docker:latest"
+    name=ng_mongodb
+    state=absent
   when: ng_mongodb_is_setup.stat.exists == False
 
 - name: "touch a setup file"
@@ -65,7 +71,7 @@
 
 - name: Run NodeGear Mongodb
   docker: >
-    image="castawaylabs/mongodb-docker"
+    image="{{registry}}castawaylabs/mongodb-docker:latest"
     volumes="/var/lib/ng_mongodb:/var/lib/mongodb"
     env="REPL_SET=ng"
     ports="{{ mongo_ip }}:{{ mongodb_port }}:27017"

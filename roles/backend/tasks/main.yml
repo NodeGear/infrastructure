@@ -2,11 +2,11 @@
 
 - name: Update ng-backend
   git: >
-  	repo={{ apps.backend.git_repo }}
-  	dest={{ apps.backend.location }}
-  	key_file=/root/ng_key
-  	accept_hostkey=yes
-  	version={{ apps.backend.version }}
+    repo="{{ apps.backend.git_repo }}"
+    dest="{{ apps.backend.location }}"
+    key_file=/root/ng_key
+    accept_hostkey=yes
+    version="{{ apps.backend.version }}"
   when: apps.backend.is_git == True
   tags:
     - backend_repo_update
@@ -14,22 +14,22 @@
 
 - name: Install credentials
   template: >
-  	src=ng_backend.json
-  	dest={{ apps.backend.location }}/lib/credentials.json
+    src=ng_backend.json
+    dest="{{ apps.backend.location }}/lib/credentials.json"
 
 # Effectively a file proxy.. The socket is mounted as volume inside the docker. It runs well, so whatever.
 
 - name: Remove NG-Backend
   docker: >
-  	image=castawaylabs/node-docker
-  	name=ng_backend
-  	state=absent
+    image="{{registry}}castawaylabs/node-docker:latest"
+    name=ng_backend
+    state=absent
 
 - name: Run NG-Backend
   docker: >
-  	image=castawaylabs/node-docker
-  	volumes="{{ apps.backend.location }}:/srv/app,/proc:/outside_proc,/var/run/docker.sock:/var/run/docker.sock,/home/ng_users:/home"
-  	name=ng_backend
-  	net=host
-  	env={{ apps.backend.env }}
-  	state=running
+    image="{{registry}}castawaylabs/node-docker:latest"
+    volumes="{{ apps.backend.location }}:/srv/app,/proc:/outside_proc,/var/run/docker.sock:/var/run/docker.sock,/home/ng_users:/home"
+    name=ng_backend
+    env="{{ apps.backend.env }}"
+    state=running
+    net=host

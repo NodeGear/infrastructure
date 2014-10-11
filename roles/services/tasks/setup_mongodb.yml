@@ -8,7 +8,7 @@
 
 - name: "mongodb is not set up, set up user"
   docker:
-    image="castawaylabs/mongodb-docker"
+    image="{{registry}}castawaylabs/mongodb-docker:latest"
     volumes={{ volume }},/root/mongodb_config.temp.js:/tmp/setup.js
     env={{ env }}
     hostname={{ hostname }}

@@ -16,11 +16,14 @@
   template: src=ng_git.json dest={{ apps.git.location }}/lib/credentials.json
 
 - name: Remove NG-Git
-  docker: image="castawaylabs/node-docker" name="ng_git" state=absent
+  docker: >
+    image="{{registry}}castawaylabs/node-docker:latest"
+    name=ng_git
+    state=absent
 
 - name: Run NG-Git
   docker: >
-    image="castawaylabs/node-docker"
+    image="{{registry}}castawaylabs/node-docker:latest"
     volumes="{{ apps.git.location }}:/srv/app"
     net="host"
     name="ng_git"

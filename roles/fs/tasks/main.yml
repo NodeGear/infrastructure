@@ -12,14 +12,19 @@
     - repo_update
 
 - name: Install credentials
-  template: src=credentials.json dest={{ apps.fs.location }}/lib/credentials.json
+  template: >
+    src=credentials.json
+    dest={{ apps.fs.location }}/lib/credentials.json
 
 - name: Remove fs
-  docker: image=castawaylabs/node-docker name=fs state=absent
+  docker: >
+    image="{{registry}}castawaylabs/node-docker:latest"
+    name=fs
+    state=absent
 
 - name: Run fs
   docker: >
-    image=castawaylabs/node-docker
+    image="{{registry}}castawaylabs/node-docker:latest"
     name=fs
     env={{ apps.fs.env }}
     ports="{{ apps.fs.ip }}:{{ apps.fs.port }}:80"

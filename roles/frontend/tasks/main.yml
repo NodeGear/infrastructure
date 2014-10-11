@@ -21,13 +21,13 @@
 
 - name: Remove NG-Frontend
   docker: >
-    image=castawaylabs/node-docker
+    image="{{registry}}castawaylabs/node-docker:latest"
     name=ng_frontend
     state=absent
 
 - name: Run NG-Frontend
   docker: >
-    image=castawaylabs/node-docker
+    image="{{registry}}castawaylabs/node-docker:latest"
     volumes="{{ apps.frontend.location }}:/srv/app,/root/.npm:/root/.npm"
     ports="127.0.0.1:5050:80"
     name=ng_frontend

@@ -1,6 +1,8 @@
 services_ip: 10.0.3.2
 backend_ip: 10.0.3.3
 
+registry: "10.0.3.5:5000/"
+
 # Paths
 apps:
   frontend:
@@ -13,7 +15,7 @@ apps:
     is_git: False
     location: /var/lib/backend
     git_repo: ssh://git@lab.castawaylabs.com/nodegear/ng-backend.git
-    env: "NODE_ENV=development"
+    env: "NODEMON=1,NODE_ENV=development"
     version: master
   git:
     is_git: False
@@ -25,7 +27,7 @@ apps:
     is_git: True
     location: /var/lib/fs
     git_repo: git://github.com/nodegear/fs-api.git
-    env: "NODE_ENV=development"
+    env: "NODE_ENV=development,PORT=80,FILES_DIR=/files,AUTH=ng_fs,STATSD_IP={{ services_ip }},STATSD_PORT=8125"
     version: master
     ip: "{{ services_ip }}"
     port: 8888
@@ -36,8 +38,14 @@ apps:
     password: AnsibleRocks
     ip: "{{ services_ip }}"
     statsd: 8125
-    graphite: 8080
+    graphite: 80
     carbon: 2003
+  proxy:
+    is_git: True
+    git_repo: git://github.com/castawaylabs/dproxy.js.git
+    location: /var/lib/proxy
+    ssl: False
+    env: NODE_ENV=production
 
 # Backend
 server_id: vagrant-dev
