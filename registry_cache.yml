@@ -5,6 +5,7 @@
   sudo: yes
 
   vars:
+    registry: "10.0.3.5:5000/"
     images:
       - { name: castawaylabs/node-docker, tag: latest }
       - { name: castawaylabs/mongodb-docker, tag: latest }
@@ -24,7 +25,7 @@
       with_items: images
 
     - name: Tag the images
-      command: docker tag {{ item.name }}:{{ item.tag }} 10.0.3.5:5000/{{ item.name }}:{{ item.tag }}
+      command: docker tag {{ item.name }}:{{ item.tag }} {{registry}}{{ item.name }}:{{ item.tag }}
       with_items: images
 
     - name: Ship images to registry
