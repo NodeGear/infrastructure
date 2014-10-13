@@ -5,7 +5,7 @@
 
 - name: Get build tools
   apt: name={{ item }} state=present
-  with_items: ['build-essential', 'librrd2-dev', 'libsensors4-dev', 'libsnmp-dev', 'libgcrypt-dev', 'chkconfig']
+  with_items: ['build-essential', 'librrd2-dev', 'libsensors4-dev', 'libsnmp-dev', 'libgcrypt-dev']
   when: collectd_compiled.stat.exists == False
 
 - name: Get collectd.tar.gz
@@ -40,9 +40,5 @@
 - name: Add init.d daemon
   copy: src=collectd.init.conf dest=/etc/init.d/collectd group=root owner=root mode=0755
 
-- command: chkconfig --add collectd
-
 - name: Start collectd
   service: name=collectd state=restarted enabled=yes
-
-- command: chkconfig collectd on

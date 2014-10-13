@@ -25,7 +25,7 @@
   docker: >
     image="{{registry}}castawaylabs/node-docker:latest"
     volumes="{{ apps.git.location }}:/srv/app"
-    net="host"
-    name="ng_git"
-    env={{ apps.git.env }}
+    net=host
+    name=ng_git
+    env="{{ apps.git.env }}"
     state=running
