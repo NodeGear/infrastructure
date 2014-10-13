@@ -17,5 +17,3 @@
 - name: PIP Docker-py
   pip: name=docker-py
 
-- name: Get the node-docker image
-  command: docker pull {{registry}}castawaylabs/node-docker:latest
