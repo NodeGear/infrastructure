@@ -10,7 +10,7 @@
   apt: name="lxc-docker" state=present update_cache=yes
 
 - name: Ammending Default Options for Docker
-  lineinfile: dest=/etc/default/docker line='DOCKER_OPTS="--insecure-registry 192.168.64.10:5000"'
+  lineinfile: dest=/etc/default/docker line='DOCKER_OPTS="--insecure-registry 10.0.3.5:5000"'
 
 - name: Restart Docker
   service: name=docker state=restarted
