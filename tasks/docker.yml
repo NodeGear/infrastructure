@@ -1,19 +1,22 @@
 ---
 
-- name: Docker APT Key
-  apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x36A1D7869245C8950F966E92D8576A8BA88D21E9 state=present
+- name: Download Docker APT Key
+  apt_key: keyserver=keyserver.ubuntu.com id=36A1D7869245C8950F966E92D8576A8BA88D21E9
 
-- name: Add docker apt source file
+- name: Add Docker APT Source File
   copy: content="deb https://get.docker.io/ubuntu docker main" dest=/etc/apt/sources.list.d/docker.list
-  register: docker_apt
 
-- name: Install docker
+- name: Install Docker
   apt: name="lxc-docker" state=present update_cache=yes
-  when: docker_apt|changed
+
+- name: Ammending Default Options for Docker
+  lineinfile: dest=/etc/default/docker line='DOCKER_OPTS="--insecure-registry 10.0.3.5:5000"'
+
+- name: Restart Docker
+  service: name=docker state=restarted
 
 - name: Install PIP
   apt: name=python-pip state=present
 
 - name: PIP Docker-py
   pip: name=docker-py
-

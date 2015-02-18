@@ -1,6 +1,6 @@
 ---
 
-- name: Create docker registry and cache images
+- name: Create Docker Registry and Cache Images
   hosts: all
   sudo: yes
 
@@ -16,18 +16,22 @@
       - { name: castawaylabs/graphite-statsd, tag: latest }
 
   tasks:
-    - apt: name=apt-transport-https
+    - name: Install HTTPS Support for Aptitude
+      apt: name=apt-transport-https state=present
+
     - include: tasks/docker.yml
 
-    - docker: image=registry name=registry state=present ports="5000:5000"
-    - name: Pull docker images
+    - name: Create Docker Registry
+      docker: image=registry name=registry state=present ports="5000:5000"
+
+    - name: Pull Docker Images
       command: docker pull {{ item.name }}:{{ item.tag }}
       with_items: images
 
-    - name: Tag the images
+    - name: Tag the Images
       command: docker tag {{ item.name }}:{{ item.tag }} {{registry}}{{ item.name }}:{{ item.tag }}
       with_items: images
 
-    - name: Ship images to registry
-      command: docker push 10.0.3.5:5000/{{ item.name }}:{{ item.tag }}
+    - name: Ship Images to Registry
+      command: docker push {{ registry }}{{ item.name }}:{{ item.tag }}
       with_items: images
