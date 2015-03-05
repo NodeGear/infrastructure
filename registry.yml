@@ -22,7 +22,7 @@
     - include: tasks/docker.yml
 
     - name: Create Docker Registry
-      docker: image=registry name=registry state=present ports="5000:5000"
+      docker: image=registry name=registry state=running ports="5000:5000"
 
     - name: Pull Docker Images
       command: docker pull {{ item.name }}:{{ item.tag }}
@@ -31,6 +31,7 @@
     - name: Tag the Images
       command: docker tag {{ item.name }}:{{ item.tag }} {{registry}}{{ item.name }}:{{ item.tag }}
       with_items: images
+      ignore_errors: yes
 
     - name: Ship Images to Registry
       command: docker push {{ registry }}{{ item.name }}:{{ item.tag }}

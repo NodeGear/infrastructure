@@ -15,7 +15,7 @@
     image="{{registry}}castawaylabs/mms-backup-docker:latest"
     name="mms_backup"
     state=absent
-  when: mms_key|default("") != "" 
+  when: mms_key|default("") != ""
 
 ###
 # MMS Monitoring
@@ -27,7 +27,7 @@
     env="MMS_KEY={{ mms_key }}"
     links="ng_mongodb:ng_mongodb,ng_client_mongodb:ng_client_mongodb"
     state=running
-  when: mms_key|default("") != "" 
+  when: mms_key|default("") != ""
 
 ###
 # MMS Backup
@@ -39,4 +39,4 @@
     env="MMS_KEY={{ mms_key }}"
     links="ng_mongodb:ng_mongodb,ng_client_mongodb:ng_client_mongodb"
     state=running
-  when: mms_key|default("") != "" 
+  when: mms_key|default("") != ""

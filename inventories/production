@@ -1,18 +1,16 @@
 [frontend]
 
-130.211.97.54
+matej@104.155.46.223
 
 [backend]
 
-146.148.19.241
+matej@146.148.24.146
 
 [proxy]
 
-130.211.104.92
-
 [services]
 
-130.211.97.54
+matej@104.155.46.223
 
 [production:children]
 frontend
