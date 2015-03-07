@@ -10,7 +10,7 @@
     name="mms"
     state=absent
 
-- name: Run MMS Backup Docker
+- name: Delete MMS Backup Docker
   docker: >
     image="{{registry}}castawaylabs/mms-backup-docker:latest"
     name="mms_backup"
@@ -26,7 +26,8 @@
     name=mms
     env="MMS_KEY={{ mms_key }}"
     links="ng_mongodb:ng_mongodb,ng_client_mongodb:ng_client_mongodb"
-    state=running
+    state=started
+    restart_policy=always
   when: mms_key|default("") != ""
 
 ###
@@ -38,5 +39,6 @@
     name=mms_backup
     env="MMS_KEY={{ mms_key }}"
     links="ng_mongodb:ng_mongodb,ng_client_mongodb:ng_client_mongodb"
-    state=running
+    state=started
+    restart_policy=always
   when: mms_key|default("") != ""

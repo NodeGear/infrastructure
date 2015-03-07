@@ -32,7 +32,8 @@
     ports="127.0.0.1:5050:80"
     name=ng_frontend
     env="PORT=80{{ apps.frontend.env }}"
-    state=running
+    state=started
+    restart_policy=always
 
 - name: Install NGINX
   include: nginx.yml

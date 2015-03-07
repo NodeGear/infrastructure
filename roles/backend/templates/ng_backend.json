@@ -8,19 +8,13 @@
 		"pass": "{{ smtp_pass }}"
 	},
 	"db": "mongodb://{{ mongodb_auth_user }}:{{ mongodb_auth_pass }}@{{ mongo_ip }}:{{ mongodb_port }}/ng",
-	"db_options": {
-		"auto_reconnect": true,
-		"native_parser": true,
-		"server": {
-			"auto_reconnect": true
-		}
-	},
 	"server": {
-		"id": "{{ server_id }}",
+		"identifier": "{{ server_id }}",
 		"name": "{{ server_name }}",
-		"price": {{ server_price }},
-		"address": "{{ server_ip }}",
-		"app_memory": {{ server_memory }}
+		"price_per_hour": {{ server_price }},
+		"location": "{{ server_ip }}",
+		"app_memory": {{ server_memory }},
+		"appLimit": 100
 	},
 	"storage": {
 		"enabled": true,
@@ -28,5 +22,10 @@
 		"auth": "{{ apps.fs.auth }}"
 	},
 	"statsd_ip": "{{ apps.graphite.ip }}",
-	"statsd_port": {{ apps.graphite.statsd }}
+	"statsd_port": {{ apps.graphite.statsd }},
+	"docker_socket": true,
+	"docker_ip": "/var/run/docker.sock",
+	"docker_port": 3030,
+	"homepath": "/home/ng_users/",
+	"scriptspath": "{{ apps.backend.location }}/ng-scripts"
 }

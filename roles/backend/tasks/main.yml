@@ -15,21 +15,29 @@
 - name: Install credentials
   template: >
     src=ng_backend.json
-    dest="{{ apps.backend.location }}/lib/credentials.json"
+    dest="{{ apps.backend.location }}/configuration.json"
 
-# Effectively a file proxy.. The socket is mounted as volume inside the docker. It runs well, so whatever.
+- stat: path=/usr/local/go/bin
+  register: go_compiled
 
-- name: Remove NG-Backend
-  docker: >
-    image="{{registry}}castawaylabs/node-docker:latest"
-    name=ng_backend
-    state=absent
+- name: Get Go
+  get_url: url=https://storage.googleapis.com/golang/go1.4.2.linux-amd64.tar.gz dest=/tmp/go1.4.2.linux-amd64.tar.gz
+  when: go_compiled.stat.exists == False
+
+- name: Unpackage Go
+  unarchive: src=/tmp/go1.4.2.linux-amd64.tar.gz dest=/usr/local copy=no
+  when: go_compiled.stat.exists == False
+
+- name: Install init script
+  template: >
+    src=initscript.bash
+    dest=/etc/init.d/ng_backend
+    group=root
+    owner=root
+    mode=0755
 
 - name: Run NG-Backend
-  docker: >
-    image="{{registry}}castawaylabs/node-docker:latest"
-    volumes="{{ apps.backend.location }}:/srv/app,/proc:/outside_proc,/var/run/docker.sock:/var/run/docker.sock,/home/ng_users:/home"
+  service: >
+    enabled=yes
     name=ng_backend
-    env="{{ apps.backend.env }}"
-    state=running
-    net=host
+    state=restarted

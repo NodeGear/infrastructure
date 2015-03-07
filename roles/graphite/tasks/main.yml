@@ -18,7 +18,8 @@
 - name: Run graphite
   docker: >
     image="{{registry}}castawaylabs/graphite-statsd:latest"
-    ports="{{ apps.graphite.ip }}:{{ apps.graphite.statsd }}:8125/udp,{{ apps.graphite.ip }}:{{ apps.graphite.graphite }}:80,{{ apps.graphite.ip }}:{{ apps.graphite.carbon }}:2003"
+    ports="{{ apps.graphite.ip }}:{{ apps.graphite.statsd }}:8125/udp,127.0.0.1:{{ apps.graphite.graphite }}:80,{{ apps.graphite.ip }}:{{ apps.graphite.carbon }}:2003"
     name="graphite"
     volumes="/var/lib/graphite_nginx.conf:/etc/nginx/sites-enabled/graphite,/var/lib/graphite_nginx.htpasswd:/etc/nginx/.htpasswd"
-    state=running
+    state=started
+    restart_policy=always

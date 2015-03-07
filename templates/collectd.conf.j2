@@ -1143,6 +1143,13 @@ LoadPlugin write_graphite
   </Node>
 </Plugin>
 
+LoadPlugin "logfile"
+<Plugin "logfile">
+  LogLevel "warning"
+  File "/var/log/collectd.log"
+  Timestamp true
+</Plugin>
+
 #<Plugin write_http>
 #	<URL "http://example.com/collectd-post">
 #		User "collectd"

@@ -28,5 +28,6 @@
     name=fs
     env={{ apps.fs.env }}
     ports="{{ apps.fs.ip }}:{{ apps.fs.port }}:80"
-    state=running
+    state=started
     volumes="{{ apps.fs.location }}:/srv/app,{{ apps.fs.dir }}:/files"
+    restart_policy=always

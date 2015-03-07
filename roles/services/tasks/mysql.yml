@@ -9,4 +9,5 @@
     volumes="/var/lib/ng_mysql:/var/lib/mysql"
     env="MYSQL_PASS={{ admin_mysql_pass }}"
     name=ng_mysql_db
-    state=running
+    state=started
+    restart_policy=always

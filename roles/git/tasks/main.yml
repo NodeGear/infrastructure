@@ -28,4 +28,5 @@
     net=host
     name=ng_git
     env="{{ apps.git.env }}"
-    state=running
+    state=started
+    restart_policy=always

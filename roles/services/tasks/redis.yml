@@ -10,4 +10,5 @@
     ports="{{ redis_ip }}:{{ redis_port }}:6379"
     name=ng_redis
     volumes="/var/lib/ng_redis:/var/lib/redis"
-    state=running
+    state=started
+    restart_policy=always

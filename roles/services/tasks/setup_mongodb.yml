@@ -17,7 +17,7 @@
     hostname={{ hostname }}
     command="/sbin/mongodb-docker setup {{ db }}"
     name={{container}}
-    state=running
+    state=started
 
 - name: "Wait until docker stops"
   command: docker wait {{ container }}

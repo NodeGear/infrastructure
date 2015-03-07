@@ -16,7 +16,7 @@
     command="/sbin/mongodb-docker setupReplicaSet admin"
     name=ng_client_mongodb_rs
     hostname=ng_client_mongodb
-    state=running
+    state=started
   when: ng_client_mongodb_is_setup.stat.exists == False
 
 - name: "Wait until docker stops"
@@ -64,4 +64,5 @@
     ports="{{ admin_mongodb_ip }}:27017:27017"
     hostname=ng_client_mongodb
     name=ng_client_mongodb
-    state=running
+    state=started
+    restart_policy=always

@@ -1,16 +1,16 @@
 [frontend]
 
-matej@104.155.46.223
+m@146.148.24.146
 
 [backend]
 
-matej@146.148.24.146
+m@104.155.36.231
 
 [proxy]
 
 [services]
 
-matej@104.155.46.223
+m@146.148.24.146
 
 [production:children]
 frontend
